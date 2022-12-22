@@ -1,5 +1,6 @@
 ﻿using COMPTOIR.Models.AppModels;
 using COMPTOIR.Models.Binding;
+using COMPTOIR.Models.FileModels;
 using COMPTOIR.Models.View;
 using COMPTOIR.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -148,7 +149,7 @@ namespace COMPTOIR.Controllers
 
 
 
-        [HttpGet]
+        [HttpPost("filter")]
         public IActionResult GetAllProducts(FilterModel model)
         {
             var service = _productService.GetProducts(model);
@@ -184,6 +185,30 @@ namespace COMPTOIR.Controllers
             }
             return Ok(service.Result);
         }
+
+        [HttpPost("upload-image")]
+        public async Task<IActionResult> UploadProductImgAsync([FromForm] FileModel model)
+        {
+            var result = await _productService.UploadProductImgAsync(model);
+            if (!result.Success)
+            {
+                return BadRequest(new { message = result.Message });
+            }
+            return Ok(result.Result);
+        }
+
+        [HttpDelete("delete-image/{id}")]
+        public async Task<IActionResult> DeleteProductImgAsync(int id)
+        {
+            var result = await _productService.DeleteProductImgAsync(id);
+            if (!result.Success)
+            {
+                return BadRequest(new { message = result.Message });
+            }
+            return Ok(result.Success);
+        }
+
+
         [HttpPut("{id}")]
         public async Task<ActionResult> PutProductAsync(int id, Product model)
         {
