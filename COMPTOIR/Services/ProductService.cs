@@ -88,14 +88,18 @@ namespace COMPTOIR.Services
         public async Task<ResultWithMessage> PostProductCategoryAsync(ProductCategory model)
         {
             var cat = _db.ProductCategories?.FirstOrDefault(x => x.Name == model.Name || x.Code == model.Code);
-            if (cat.Name == model.Name)
+            if (cat != null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Already Exist !!!" };
+                if (cat.Name == model.Name)
+                {
+                    return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Already Exist !!!" };
+                }
+                if (cat.Code == model.Code)
+                {
+                    return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Code} Already Exist !!!" };
+                }
             }
-            if (cat.Code == model.Code)
-            {
-                return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Code} Already Exist !!!" };
-            }
+            
             await _db.ProductCategories.AddAsync(model);
             _db.SaveChanges();
             return new ResultWithMessage { Success = true, Result = model };
@@ -107,12 +111,12 @@ namespace COMPTOIR.Services
             {
                 return new ResultWithMessage { Success = false, Message = $@"Bad Request" };
             }
-            var cat = _db.ProductCategories?.Find(id);
-            _db.Entry(cat).State = EntityState.Detached;
+            var cat = _db.ProductCategories?.FirstOrDefault(x=> x.Id == id);   
             if (cat == null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Not Found !!!" };
             }
+            _db.Entry(cat).State = EntityState.Detached;
             cat = model;
             _db.Entry(cat).State = EntityState.Modified;
             _db.SaveChanges();
@@ -140,13 +144,16 @@ namespace COMPTOIR.Services
         public async Task<ResultWithMessage> PostProductSubCategoryAsync(ProductSubCategory model)
         {
             var subcat = _db.ProductSubCategories?.FirstOrDefault(x => x.Name == model.Name || x.Code == model.Code);
-            if (subcat.Name == model.Name)
+            if (subcat != null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Already Exist !!!" };
-            }
-            if (subcat.Code == model.Code)
-            {
-                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Code} Already Exist !!!" };
+                if (subcat.Name == model.Name)
+                {
+                    return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Already Exist !!!" };
+                }
+                if (subcat.Code == model.Code)
+                {
+                    return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Code} Already Exist !!!" };
+                }
             }
             await _db.ProductSubCategories.AddAsync(model);
             _db.SaveChanges();
@@ -161,12 +168,12 @@ namespace COMPTOIR.Services
             {
                 return new ResultWithMessage { Success = false, Message = $@"Bad Request" };
             }
-            var subcat = _db.ProductSubCategories?.Find(id);
-            _db.Entry(subcat).State = EntityState.Detached;
+            var subcat = _db.ProductSubCategories?.FirstOrDefault(x => x.Id == id);
             if (subcat == null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Not Found !!!" };
             }
+            _db.Entry(subcat).State = EntityState.Detached;
             subcat = model;
             _db.Entry(subcat).State = EntityState.Modified;
             _db.SaveChanges();
@@ -213,7 +220,6 @@ namespace COMPTOIR.Services
             return new ResultWithMessage { Success = true, Result = prodviewmodel };
         }
 
-
         public async Task<ResultWithMessage> UploadProductImgAsync(FileModel model)
         {
             var productId = int.Parse(model.FileName);
@@ -235,8 +241,6 @@ namespace COMPTOIR.Services
             return new ResultWithMessage { Success = true, Result = result };
         }
 
-
-
         public async Task<ResultWithMessage> DeleteProductImgAsync(int id)
         {
             var product = _db.Products.Find(id);
@@ -255,21 +259,20 @@ namespace COMPTOIR.Services
             return new ResultWithMessage { Success = true, Message = "Logo Deleted !!!" };
         }
 
-
         public async Task<ResultWithMessage> PutProductAsync(int id, ProductBindingModel model)
         {
             if (id != model.Id)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Bad Request" };
             }
-            var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
-            var prod = _db.Products?.Find(id);
-            var tempImgUrl = prod.ImageUrl;
-            _db.Entry(prod).State = EntityState.Detached;
+            var prod = _db.Products?.FirstOrDefault(x => x.Id == id);
             if (prod == null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product {model.Name} Not Found !!!" };
             }
+            _db.Entry(prod).State = EntityState.Detached;
+            var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+            var tempImgUrl = prod.ImageUrl;
             var tempProd = new Product(model);
             tempProd.ImageUrl = tempImgUrl;
             _db.Entry(tempProd).State = EntityState.Modified;
