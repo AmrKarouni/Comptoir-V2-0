@@ -22,22 +22,22 @@ namespace COMPTOIR.Controllers
         public IActionResult GetAllProductCategories()
         {
             var service = _productService.GetAllProductCategories();
-            if (service == null)
+            if (!string.IsNullOrEmpty(service.Message))
             {
-                return BadRequest(new { message = "No Category Found!!!" });
+                return BadRequest(new { message = service.Message });
             }
-            return Ok(service);
+            return Ok(service.Result);
         }
 
         [HttpGet("Categories/{id}")]
         public IActionResult GetProductCategoryById(int id)
         {
             var service = _productService.GetProductCategoryById(id);
-            if (service.Result == null)
+            if (!string.IsNullOrEmpty(service.Message))
             {
-                return NotFound(new { message = "No Category Found!!!" });
+                return NotFound(new { message = service.Message });
             }
-            return Ok(service);
+            return Ok(service.Result);
         }
 
         [HttpPost("Categories")]
@@ -87,22 +87,22 @@ namespace COMPTOIR.Controllers
         public IActionResult GetAllProductSubCategories()
         {
             var service = _productService.GetAllProductSubCategories();
-            if (service == null)
+            if (!string.IsNullOrEmpty(service.Message))
             {
-                return BadRequest(new { message = "No SubCategory Found!!!" });
+                return BadRequest(new { message = service.Message });
             }
-            return Ok(service);
+            return Ok(service.Result);
         }
 
         [HttpGet("SubCategories/{id}")]
         public IActionResult GetProductSubCategoryById(int id)
         {
             var service = _productService.GetProductSubCategoryById(id);
-            if (service.Result == null)
+            if (!string.IsNullOrEmpty(service.Message))
             {
-                return NotFound(new { message = "No SubCategory Found!!!" });
+                return NotFound(new { message = service.Message});
             }
-            return Ok(service);
+            return Ok(service.Result);
         }
 
         [HttpPost("SubCategories")]
@@ -157,22 +157,22 @@ namespace COMPTOIR.Controllers
             {
                 return BadRequest(new { message = "No Product Found!!!" });
             }
-            return Ok(service);
+            return Ok(service.Result);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetProductById(int id)
         {
             var service = _productService.GetProductById(id);
-            if (service.Result == null)
+            if (!string.IsNullOrEmpty(service.Message))
             {
-                return NotFound(new { message = "No Product Found!!!" });
+                return NotFound(new { message = service.Message });
             }
-            return Ok(service);
+            return Ok(service.Result);
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostProductAsync(Product model)
+        public async Task<ActionResult> PostProductAsync(ProductBindingModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -210,7 +210,7 @@ namespace COMPTOIR.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutProductAsync(int id, Product model)
+        public async Task<ActionResult> PutProductAsync(int id, ProductBindingModel model)
         {
             if (!ModelState.IsValid)
             {
