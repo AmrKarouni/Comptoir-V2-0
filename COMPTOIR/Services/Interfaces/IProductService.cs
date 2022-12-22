@@ -22,10 +22,10 @@ namespace COMPTOIR.Services.Interfaces
 
         //ResultWithMessage GetAllProducts();
         ResultWithMessage GetProductById(int id);
-        Task<ResultWithMessage> PostProductAsync(Product model);
+        Task<ResultWithMessage> PostProductAsync(ProductBindingModel model);
         Task<ResultWithMessage> UploadProductImgAsync(FileModel model);
         Task<ResultWithMessage> DeleteProductImgAsync(int id);
-        Task<ResultWithMessage> PutProductAsync(int id, Product model);
+        Task<ResultWithMessage> PutProductAsync(int id, ProductBindingModel model);
 
         Task<ResultWithMessage> CheckCategoryName(string value);
         Task<ResultWithMessage> CheckCategoryCode(string value);

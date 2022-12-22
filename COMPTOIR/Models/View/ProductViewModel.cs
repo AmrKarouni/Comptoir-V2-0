@@ -78,27 +78,7 @@ namespace COMPTOIR.Models.View
             CategoryCode = product.SubCategory?.Category?.Code;
             IsConsumable = product.SubCategory?.Category?.IsConsumable;
         }
-        //public ProductViewModel(Product product)
-        //{
-        //    Id = product.Id;
-        //    Name = product.Name;
-        //    Code = product.Code;
-        //    Manifacturer = product.Manifacturer;
-        //    Description = product.Description;
-        //    ImageUrl = product.ImageUrl;
-        //    IsFinal = product.IsFinal;
-        //    IsRaw = product.IsRaw;
-        //    CreatedDate = product.CreatedDate;
-        //    UnitName = product.UnitName;
-        //    SubCategoryId = product.SubCategoryId;
-        //    SubCategoryName = product.SubCategory?.Name;
-        //    SubCategoryCode = product.SubCategory?.Code;
-        //    IsGarbage = product.SubCategory?.IsGarbage;
-        //    CategoryId = product.SubCategory?.CategoryId;
-        //    CategoryName = product.SubCategory?.Category?.Name;
-        //    CategoryCode = product.SubCategory?.Category?.Code;
-        //    IsConsumable = product.SubCategory?.Category?.IsConsumable;
-        //}
+
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Code { get; set; }

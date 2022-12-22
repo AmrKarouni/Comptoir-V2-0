@@ -11,14 +11,6 @@ namespace COMPTOIR.Models.AppModels
         {
             
         }
-        public ProductCategory(ProductCategoryBindingModel model)
-        {
-            Name = model.Name;
-            Code = model.Code;
-            Description = model.Description;
-            IsConsumable = model.IsConsumable;
-            IsDeleted = false;
-        }
         public int Id { get; set; }
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]
@@ -35,6 +27,10 @@ namespace COMPTOIR.Models.AppModels
 
     public class ProductSubCategory
     {
+        public ProductSubCategory()
+        {
+
+        }
         public int Id { get; set; }
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]
@@ -64,6 +60,26 @@ namespace COMPTOIR.Models.AppModels
 
     public class Product
     {
+        public Product()
+        {
+
+        }
+        public Product(ProductBindingModel model)
+        {
+            Id = model.Id;
+            Name = model.Name;
+            Code = model.Code;
+            Manifacturer = model.Manifacturer;
+            Description = model.Description;
+            ImageUrl = model.ImageUrl;
+            IsFinal = model.IsFinal;
+            IsRaw = model.IsRaw;
+            CreatedDate = model.CreatedDate;
+            UnitName = model.UnitName;
+            SubCategoryId = model.SubCategoryId;
+            IsDeleted = model.IsDeleted;
+            Recipes = new List<Recipe>();
+        }
         public int Id { get; set; }
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]
@@ -85,5 +101,6 @@ namespace COMPTOIR.Models.AppModels
         public int SubCategoryId { get; set; }
         public virtual ProductSubCategory? SubCategory { get; set; }
         public bool IsDeleted { get; set; }
-    }
+        public virtual ICollection <Recipe>? Recipes { get; set; }
+}
 }
