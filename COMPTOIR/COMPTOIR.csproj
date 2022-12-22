@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="App_Media\" />
+    <Folder Include="App_Media\products\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

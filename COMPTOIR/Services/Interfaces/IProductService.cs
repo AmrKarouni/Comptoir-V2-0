@@ -1,5 +1,6 @@
 ﻿using COMPTOIR.Models.AppModels;
 using COMPTOIR.Models.Binding;
+using COMPTOIR.Models.FileModels;
 using COMPTOIR.Models.View;
 
 namespace COMPTOIR.Services.Interfaces
@@ -22,6 +23,8 @@ namespace COMPTOIR.Services.Interfaces
         //ResultWithMessage GetAllProducts();
         ResultWithMessage GetProductById(int id);
         Task<ResultWithMessage> PostProductAsync(Product model);
+        Task<ResultWithMessage> UploadProductImgAsync(FileModel model);
+        Task<ResultWithMessage> DeleteProductImgAsync(int id);
         Task<ResultWithMessage> PutProductAsync(int id, Product model);
 
         Task<ResultWithMessage> CheckCategoryName(string value);

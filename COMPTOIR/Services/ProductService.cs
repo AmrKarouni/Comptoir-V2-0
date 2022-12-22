@@ -1,6 +1,7 @@
 ﻿using COMPTOIR.Contexts;
 using COMPTOIR.Models.AppModels;
 using COMPTOIR.Models.Binding;
+using COMPTOIR.Models.FileModels;
 using COMPTOIR.Models.View;
 using COMPTOIR.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -10,17 +11,22 @@ namespace COMPTOIR.Services
     public class ProductService : IProductService
     {
         private readonly ApplicationDbContext _db;
-        public ProductService(ApplicationDbContext db)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IFileService _fileService;
+        public ProductService(ApplicationDbContext db, IHttpContextAccessor httpContextAccessor, IFileService fileService)
         {
             _db = db;
+            _httpContextAccessor = httpContextAccessor;
+            _fileService = fileService;
         }
 
         public ResultWithMessage GetProducts(FilterModel model)
         {
+            var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             var products = _db.Products?.Include(x => x.SubCategory)
                                         .ThenInclude(y => y.Category)
                                         .Where(z => z.IsDeleted == false)
-                                        .Select(p => new ProductViewModel(p));
+                                        .Select(p => new ProductViewModel(p, hostpath));
             if (model.SearchQuery != null)
             {
                 if (int.TryParse(model.SearchQuery,out int code))
@@ -167,6 +173,11 @@ namespace COMPTOIR.Services
         public ResultWithMessage GetProductById(int id)
         {
             var prod = _db.Products?.Find(id);
+            var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+            if (prod.ImageUrl != null)
+            {
+                prod.ImageUrl = hostpath + prod.ImageUrl;
+            }
             if (prod == null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product  ID#{id} No Found !!!" };
@@ -175,6 +186,7 @@ namespace COMPTOIR.Services
         }
         public async Task<ResultWithMessage> PostProductAsync(Product model)
         {
+            var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             var prod = _db.Products?.FirstOrDefault(x => x.Name == model.Name || x.Code == model.Code);
             if (prod.Name == model.Name)
             {
@@ -187,9 +199,51 @@ namespace COMPTOIR.Services
             await _db.Products.AddAsync(model);
             _db.SaveChanges();
             var res = _db.Products.Include(x => x.SubCategory).ThenInclude(x => x.Category).FirstOrDefault(x => x.Id == model.Id);
-            var prodviewmodel = new ProductViewModel(res);
+            var prodviewmodel = new ProductViewModel(res, hostpath);
             return new ResultWithMessage { Success = true, Result = prodviewmodel };
         }
+
+
+        public async Task<ResultWithMessage> UploadProductImgAsync(FileModel model)
+        {
+            var productId = int.Parse(model.FileName);
+            var product = _db.Products?.Find(productId);
+            var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+            if (product == null)
+            {
+                return new ResultWithMessage { Success = false, Message = $@"Product Not Found !!!" };
+            }
+            var uploadResult = await _fileService.UploadFile(model, "products");
+            if (!uploadResult.Success)
+            {
+                return new ResultWithMessage { Success = false, Message = $@"Upload Logo Failed !!!" };
+            }
+            product.ImageUrl = uploadResult.Message;
+            await PutProductAsync(productId, product);
+            var result = new { LogoUrl = hostpath + uploadResult.Message };
+            return new ResultWithMessage { Success = true, Result = result };
+        }
+
+
+
+        public async Task<ResultWithMessage> DeleteProductImgAsync(int id)
+        {
+            var product = _db.Products.Find(id);
+            if (product == null)
+            {
+                return new ResultWithMessage { Success = false, Message = $@"Product Not Found !!!" };
+            }
+            var deletedfile = await _fileService.DeleteFile(product.ImageUrl);
+            if (deletedfile == null || deletedfile.Success == false)
+            {
+                return new ResultWithMessage { Success = false, Message = $@"Delete Logo Failed !!!" };
+            }
+            product.ImageUrl = null;
+            _db.Entry(product).State = EntityState.Modified;
+            _db.SaveChanges();
+            return new ResultWithMessage { Success = true, Message = "Logo Deleted !!!" };
+        }
+
 
         public async Task<ResultWithMessage> PutProductAsync(int id, Product model)
         {
@@ -197,17 +251,20 @@ namespace COMPTOIR.Services
             {
                 return new ResultWithMessage { Success = false, Message = $@"Bad Request" };
             }
+            var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             var prod = _db.Products?.Find(id);
+            var tempImgUrl = prod.ImageUrl;
             _db.Entry(prod).State = EntityState.Detached;
             if (prod == null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product {model.Name} Not Found !!!" };
             }
             prod = model;
+            prod.ImageUrl = tempImgUrl;
             _db.Entry(prod).State = EntityState.Modified;
             _db.SaveChanges();
             var res = _db.Products.Include(x => x.SubCategory).ThenInclude(x => x.Category).FirstOrDefault(x => x.Id == model.Id);
-            var prodviewmodel = new ProductViewModel(res);
+            var prodviewmodel = new ProductViewModel(res, hostpath);
             return new ResultWithMessage { Success = true, Result = prodviewmodel };
         }
 
