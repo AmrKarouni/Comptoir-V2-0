@@ -210,5 +210,65 @@ namespace COMPTOIR.Services
             var prodviewmodel = new ProductViewModel(res);
             return new ResultWithMessage { Success = true, Result = prodviewmodel };
         }
+
+        public async Task<ResultWithMessage> CheckCategoryName(string value)
+        {
+            var user = _db.ProductCategories?.FirstOrDefault(x => x.Name.ToLower() == value.ToLower());
+            if (user == null)
+            {
+                return new ResultWithMessage { Success = false };
+            }
+            return new ResultWithMessage { Success = true };
+        }
+
+        public async Task<ResultWithMessage> CheckCategoryCode(string value)
+        {
+            var user = _db.ProductCategories?.FirstOrDefault(x => x.Code.ToLower() == value.ToLower());
+            if (user == null)
+            {
+                return new ResultWithMessage { Success = false };
+            }
+            return new ResultWithMessage { Success = true };
+        }
+
+        public async Task<ResultWithMessage> CheckSubCategoryName(string value)
+        {
+            var user = _db.ProductSubCategories?.FirstOrDefault(x => x.Name.ToLower() == value.ToLower());
+            if (user == null)
+            {
+                return new ResultWithMessage { Success = false };
+            }
+            return new ResultWithMessage { Success = true };
+        }
+
+        public async Task<ResultWithMessage> CheckSubCategoryCode(string value)
+        {
+            var user = _db.ProductSubCategories?.FirstOrDefault(x => x.Code.ToLower() == value.ToLower());
+            if (user == null)
+            {
+                return new ResultWithMessage { Success = false };
+            }
+            return new ResultWithMessage { Success = true };
+        }
+
+        public async Task<ResultWithMessage> CheckProductName(string value)
+        {
+            var user = _db.Products?.FirstOrDefault(x => x.Name.ToLower() == value.ToLower());
+            if (user == null)
+            {
+                return new ResultWithMessage { Success = false };
+            }
+            return new ResultWithMessage { Success = true };
+        }
+
+        public async Task<ResultWithMessage> CheckProductCode(string value)
+        {
+            var user = _db.Products?.FirstOrDefault(x => x.Code.ToLower() == value.ToLower());
+            if (user == null)
+            {
+                return new ResultWithMessage { Success = false };
+            }
+            return new ResultWithMessage { Success = true };
+        }
     }
 }

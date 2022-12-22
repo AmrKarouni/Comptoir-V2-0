@@ -68,6 +68,20 @@ namespace COMPTOIR.Controllers
             return Ok(service.Result);
         }
 
+
+        [HttpGet("Categories/check-name")]
+        public async Task<IActionResult> CheckCategoryName(string value)
+        {
+            var response = await _productService.CheckCategoryName(value);
+            return Ok(response.Success);
+        }
+        [HttpGet("Categories/check-code")]
+        public async Task<IActionResult> CheckCategoryCode(string value)
+        {
+            var response = await _productService.CheckCategoryCode(value);
+            return Ok(response.Success);
+        }
+
         [HttpGet("SubCategories")]
         public IActionResult GetAllProductSubCategories()
         {
@@ -119,6 +133,21 @@ namespace COMPTOIR.Controllers
             return Ok(service.Result);
         }
 
+        [HttpGet("SubCategories/check-name")]
+        public async Task<IActionResult> CheckSubCategoryName(string value)
+        {
+            var response = await _productService.CheckSubCategoryName(value);
+            return Ok(response.Success);
+        }
+        [HttpGet("SubCategories/check-code")]
+        public async Task<IActionResult> CheckSubCategoryCode(string value)
+        {
+            var response = await _productService.CheckSubCategoryCode(value);
+            return Ok(response.Success);
+        }
+
+
+
         [HttpGet]
         public IActionResult GetAllProducts(FilterModel model)
         {
@@ -168,6 +197,19 @@ namespace COMPTOIR.Controllers
                 return BadRequest(new { message = service.Message });
             }
             return Ok(service.Result);
+        }
+
+        [HttpGet("check-name")]
+        public async Task<IActionResult> CheckProductName(string value)
+        {
+            var response = await _productService.CheckProductName(value);
+            return Ok(response.Success);
+        }
+        [HttpGet("check-code")]
+        public async Task<IActionResult> CheckProductCode(string value)
+        {
+            var response = await _productService.CheckProductCode(value);
+            return Ok(response.Success);
         }
     }
 }

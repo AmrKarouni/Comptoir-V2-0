@@ -23,5 +23,12 @@ namespace COMPTOIR.Services.Interfaces
         ResultWithMessage GetProductById(int id);
         Task<ResultWithMessage> PostProductAsync(Product model);
         Task<ResultWithMessage> PutProductAsync(int id, Product model);
+
+        Task<ResultWithMessage> CheckCategoryName(string value);
+        Task<ResultWithMessage> CheckCategoryCode(string value);
+        Task<ResultWithMessage> CheckSubCategoryName(string value);
+        Task<ResultWithMessage> CheckSubCategoryCode(string value);
+        Task<ResultWithMessage> CheckProductName(string value);
+        Task<ResultWithMessage> CheckProductCode(string value);
     }
 }
