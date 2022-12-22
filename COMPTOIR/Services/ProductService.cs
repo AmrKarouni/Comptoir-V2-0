@@ -60,9 +60,8 @@ namespace COMPTOIR.Services
         public ResultWithMessage GetAllProductCategories()
         {
             var categories = new List<ProductCategoryViewModel>();
-            var list = _db.ProductCategories?.Where(x => x.IsDeleted == false)
-                                              .Select(p => new ProductCategoryViewModel(p));
-            categories = list.ToList();
+            categories = _db.ProductCategories?.Where(x => x.IsDeleted == false)
+                                              .Select(p => new ProductCategoryViewModel(p)).ToList();
             return new ResultWithMessage { Success = true, Result = categories };
         }
 
@@ -78,9 +77,13 @@ namespace COMPTOIR.Services
         public async Task<ResultWithMessage> PostProductCategoryAsync(ProductCategory model)
         {
             var cat = _db.ProductCategories?.FirstOrDefault(x => x.Name == model.Name || x.Code == model.Code);
-            if (cat != null)
+            if (cat.Name == model.Name)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Already Exist !!!" };
+            }
+            if (cat.Code == model.Code)
+            {
+                return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Code} Already Exist !!!" };
             }
             await _db.ProductCategories.AddAsync(model);
             _db.SaveChanges();
@@ -108,10 +111,9 @@ namespace COMPTOIR.Services
         public ResultWithMessage GetAllProductSubCategories()
         {
             var subcategories = new List<ProductSubCategoryViewModel>();
-            var list = _db.ProductSubCategories?.Include(c => c.Category)
+            subcategories = _db.ProductSubCategories?.Include(c => c.Category)
                                                 .Where(x => x.IsDeleted == false)
-                                                .Select(p => new ProductSubCategoryViewModel(p));
-            subcategories = list?.ToList();
+                                                .Select(p => new ProductSubCategoryViewModel(p)).ToList();
             return new ResultWithMessage { Success = true, Result = subcategories };
         }
 
@@ -126,10 +128,14 @@ namespace COMPTOIR.Services
         }
         public async Task<ResultWithMessage> PostProductSubCategoryAsync(ProductSubCategory model)
         {
-            var cat = _db.ProductSubCategories?.FirstOrDefault(x => x.Name == model.Name || x.Code == model.Code);
-            if (cat != null)
+            var subcat = _db.ProductSubCategories?.FirstOrDefault(x => x.Name == model.Name || x.Code == model.Code);
+            if (subcat.Name == model.Name)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Already Exist !!!" };
+            }
+            if (subcat.Code == model.Code)
+            {
+                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Code} Already Exist !!!" };
             }
             await _db.ProductSubCategories.AddAsync(model);
             _db.SaveChanges();
@@ -158,17 +164,6 @@ namespace COMPTOIR.Services
             return new ResultWithMessage { Success = true, Result = subcatviewmodel };
         }
 
-        //public ResultWithMessage GetAllProducts()
-        //{
-        //    var products = new List<ProductViewModel>();
-        //    var list = _db.Products?.Include(c => c.SubCategory)
-        //                            .ThenInclude(c => c.Category)
-        //                            .Where(x => x.IsDeleted == false)
-        //                            .Select(p => new ProductViewModel(p));
-        //    products = list?.ToList();
-        //    return new ResultWithMessage { Success = true, Result = products };
-        //}
-
         public ResultWithMessage GetProductById(int id)
         {
             var prod = _db.Products?.Find(id);
@@ -181,14 +176,18 @@ namespace COMPTOIR.Services
         public async Task<ResultWithMessage> PostProductAsync(Product model)
         {
             var prod = _db.Products?.FirstOrDefault(x => x.Name == model.Name || x.Code == model.Code);
-            if (prod != null)
+            if (prod.Name == model.Name)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product {model.Name} Already Exist !!!" };
             }
+            if (prod.Code == model.Code)
+            {
+                return new ResultWithMessage { Success = false, Message = $@"Product {model.Code} Already Exist !!!" };
+            }
             await _db.Products.AddAsync(model);
             _db.SaveChanges();
-            _db.Entry(model).Reference(x => x.SubCategory).Load();
-            var prodviewmodel = new ProductViewModel(model);
+            var res = _db.Products.Include(x => x.SubCategory).ThenInclude(x => x.Category).FirstOrDefault(x => x.Id == model.Id);
+            var prodviewmodel = new ProductViewModel(res);
             return new ResultWithMessage { Success = true, Result = prodviewmodel };
         }
 
@@ -207,8 +206,8 @@ namespace COMPTOIR.Services
             prod = model;
             _db.Entry(prod).State = EntityState.Modified;
             _db.SaveChanges();
-            _db.Entry(prod).Reference(x => x.SubCategory).Load();
-            var prodviewmodel = new ProductViewModel(prod);
+            var res = _db.Products.Include(x => x.SubCategory).ThenInclude(x => x.Category).FirstOrDefault(x => x.Id == model.Id);
+            var prodviewmodel = new ProductViewModel(res);
             return new ResultWithMessage { Success = true, Result = prodviewmodel };
         }
     }
