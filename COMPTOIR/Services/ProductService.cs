@@ -37,7 +37,7 @@ namespace COMPTOIR.Services
             var products = _db.Products?.Include(x => x.SubCategory)
                                         .ThenInclude(y => y.Category)
                                         .Where(z => z.IsDeleted == false);
-            if (model.SearchQuery != null)
+            if (!string.IsNullOrEmpty(model.SearchQuery))
             {
                 if (int.TryParse(model.SearchQuery, out int code))
                 {
