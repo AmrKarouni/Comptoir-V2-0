@@ -47,9 +47,9 @@ namespace COMPTOIR.Services
                 }
                 else
                 {
-                    products = products.Where(x => x.Name == model.SearchQuery ||
-                                                   x.SubCategory.Name == model.SearchQuery ||
-                                                   x.SubCategory.Category.Name == model.SearchQuery);
+                    products = products.Where(x => x.Name.ToLower().StartsWith(model.SearchQuery.ToLower()) ||
+                                                   x.SubCategory.Name.ToLower().StartsWith(model.SearchQuery.ToLower()) ||
+                                                   x.SubCategory.Category.Name.ToLower().StartsWith(model.SearchQuery.ToLower());
                 }
             }
             var dataSize = products.Count();
