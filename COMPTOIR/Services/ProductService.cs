@@ -49,7 +49,7 @@ namespace COMPTOIR.Services
                 {
                     products = products.Where(x => x.Name.ToLower().StartsWith(model.SearchQuery.ToLower()) ||
                                                    x.SubCategory.Name.ToLower().StartsWith(model.SearchQuery.ToLower()) ||
-                                                   x.SubCategory.Category.Name.ToLower().StartsWith(model.SearchQuery.ToLower());
+                                                   x.SubCategory.Category.Name.ToLower().StartsWith(model.SearchQuery.ToLower()));
                 }
             }
             var dataSize = products.Count();
