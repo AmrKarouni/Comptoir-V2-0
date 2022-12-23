@@ -63,7 +63,7 @@ namespace COMPTOIR.Services
                 products?.Select(p => new ProductViewModel(p, hostpath))?.OrderByDescending(x => sortProperty.GetValue(x));
             }
 
-            var result = products.Skip(model.PageSize * model.PageIndex).Take(model.PageSize);
+            var result = products.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).Select(p => new ProductViewModel(p, hostpath)).ToList();
             return new ResultWithMessage
             {
                 Success = true,
