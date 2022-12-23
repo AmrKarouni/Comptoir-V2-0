@@ -29,10 +29,10 @@ namespace COMPTOIR.Services.Interfaces
         Task<ResultWithMessage> PutProductAsync(int id, ProductBindingModel model);
 
         Task<ResultWithMessage> CheckCategoryName(string value);
-        Task<ResultWithMessage> CheckCategoryCode(string value);
         Task<ResultWithMessage> CheckSubCategoryName(string value);
-        Task<ResultWithMessage> CheckSubCategoryCode(string value);
         Task<ResultWithMessage> CheckProductName(string value);
         Task<ResultWithMessage> CheckProductCode(string value);
+
+        ResultWithMessage GenerateCode();
     }
 }

@@ -9,16 +9,18 @@ namespace COMPTOIR.Models.AppModels
     {
         public ProductCategory()
         {
-            
+
         }
         public int Id { get; set; }
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]
         [Display(Name = "Category Name")]
         public string? Name { get; set; }
-        [StringLength(20, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 2)]
-        [Display(Name = "Category Code")]
-        public string? Code { get; set; }
+        //[Required]
+        //[MaxLength(20)]
+        //[MinLength(1)]
+        //[Display(Name = "Category Code")]
+        //public int? Code { get; set; }
         public string? Description { get; set; }
         public bool IsConsumable { get; set; } = true;
         public virtual ICollection<ProductSubCategory>? SubCategories { get; set; }
@@ -36,9 +38,11 @@ namespace COMPTOIR.Models.AppModels
         [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]
         [Display(Name = "SubCategory Name")]
         public string? Name { get; set; }
-        [StringLength(20, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 2)]
-        [Display(Name = "SubCategory Code")]
-        public string? Code { get; set; }
+        //[Required]
+        //[MaxLength(20)]
+        //[MinLength(1)]
+        //[Display(Name = "Category Code")]
+        //public int? Code { get; set; }
         public string? Description { get; set; }
         public bool IsGarbage { get; set; } = false;
         [ForeignKey("Category")]
@@ -85,9 +89,11 @@ namespace COMPTOIR.Models.AppModels
         [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]
         [Display(Name = "Product Name")]
         public string? Name { get; set; }
-        [StringLength(10, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 2)]
-        [Display(Name = "Product Code")]
-        public string? Code { get; set; }
+        [Required]
+        [MaxLength(20)]
+        [MinLength(1)]
+        [Display(Name = "Category Code")]
+        public int? Code { get; set; }
         public string? Manifacturer { get; set; }
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
@@ -101,6 +107,6 @@ namespace COMPTOIR.Models.AppModels
         public int SubCategoryId { get; set; }
         public virtual ProductSubCategory? SubCategory { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public virtual ICollection <Recipe>? Recipes { get; set; }
-}
+        public virtual ICollection<Recipe>? Recipes { get; set; }
+    }
 }

@@ -42,9 +42,7 @@ namespace COMPTOIR.Services
             {
                 if (int.TryParse(model.SearchQuery, out int code))
                 {
-                    products = products.Where(x => x.Code == model.SearchQuery ||
-                                                   x.SubCategory.Code == model.SearchQuery ||
-                                                   x.SubCategory.Category.Code == model.SearchQuery);
+                    products = products.Where(x => x.Code == code);
                 }
                 else
                 {
@@ -87,37 +85,30 @@ namespace COMPTOIR.Services
             var cat = _db.ProductCategories?.FirstOrDefault(x => x.Id == id);
             if (cat == null)
             {
-                return new ResultWithMessage { Success = false , Message = $@"Product Category ID#{id} No Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product Category ID#{id} No Found !!!" };
             }
-            return new ResultWithMessage { Success = true, Result = cat }; 
+            return new ResultWithMessage { Success = true, Result = cat };
         }
         public async Task<ResultWithMessage> PostProductCategoryAsync(ProductCategory model)
         {
-            var cat = _db.ProductCategories?.FirstOrDefault(x => x.Name == model.Name || x.Code == model.Code);
+            var cat = _db.ProductCategories?.FirstOrDefault(x => x.Name == model.Name);
             if (cat != null)
             {
-                if (cat.Name == model.Name)
-                {
-                    return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Already Exist !!!" };
-                }
-                if (cat.Code == model.Code)
-                {
-                    return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Code} Already Exist !!!" };
-                }
+                return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Already Exist !!!" };
             }
-            
+
             await _db.ProductCategories.AddAsync(model);
             _db.SaveChanges();
             return new ResultWithMessage { Success = true, Result = model };
         }
 
-        public async Task<ResultWithMessage> PutProductCategoryAsync(int id,ProductCategory model)
+        public async Task<ResultWithMessage> PutProductCategoryAsync(int id, ProductCategory model)
         {
             if (id != model.Id)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Bad Request" };
             }
-            var cat = _db.ProductCategories?.FirstOrDefault(x=> x.Id == id);   
+            var cat = _db.ProductCategories?.FirstOrDefault(x => x.Id == id);
             if (cat == null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Not Found !!!" };
@@ -149,17 +140,12 @@ namespace COMPTOIR.Services
         }
         public async Task<ResultWithMessage> PostProductSubCategoryAsync(ProductSubCategory model)
         {
-            var subcat = _db.ProductSubCategories?.FirstOrDefault(x => x.Name == model.Name || x.Code == model.Code);
+            var subcat = _db.ProductSubCategories?.FirstOrDefault(x => x.Name == model.Name);
             if (subcat != null)
             {
-                if (subcat.Name == model.Name)
-                {
-                    return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Already Exist !!!" };
-                }
-                if (subcat.Code == model.Code)
-                {
-                    return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Code} Already Exist !!!" };
-                }
+                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Already Exist !!!" };
+
+
             }
             await _db.ProductSubCategories.AddAsync(model);
             _db.SaveChanges();
@@ -218,7 +204,7 @@ namespace COMPTOIR.Services
                 }
             }
             var prod = new Product(model);
-            prod.Recipes.Add(_recipeService.InitialRecipe(prod,model.Price));
+            prod.Recipes.Add(_recipeService.InitialRecipe(prod, model.Price));
             await _db.Products.AddAsync(prod);
             _db.SaveChanges();
             var res = _db.Products.Include(x => x.SubCategory).ThenInclude(x => x.Category).FirstOrDefault(x => x.Id == prod.Id);
@@ -282,7 +268,7 @@ namespace COMPTOIR.Services
             var tempImgUrl = oldproduct.ImageUrl;
             var tempProd = new Product(model);
             var recipe = _db.Recipes.FirstOrDefault(x => x.ProductId == model.Id);
-            if (recipe !=  null)
+            if (recipe != null)
             {
                 recipe.Price = model.Price;
                 _db.Entry(recipe).State = EntityState.Modified;
@@ -306,29 +292,9 @@ namespace COMPTOIR.Services
             return new ResultWithMessage { Success = true };
         }
 
-        public async Task<ResultWithMessage> CheckCategoryCode(string value)
-        {
-            var user = _db.ProductCategories?.FirstOrDefault(x => x.Code.ToLower() == value.ToLower());
-            if (user == null)
-            {
-                return new ResultWithMessage { Success = false };
-            }
-            return new ResultWithMessage { Success = true };
-        }
-
         public async Task<ResultWithMessage> CheckSubCategoryName(string value)
         {
             var user = _db.ProductSubCategories?.FirstOrDefault(x => x.Name.ToLower() == value.ToLower());
-            if (user == null)
-            {
-                return new ResultWithMessage { Success = false };
-            }
-            return new ResultWithMessage { Success = true };
-        }
-
-        public async Task<ResultWithMessage> CheckSubCategoryCode(string value)
-        {
-            var user = _db.ProductSubCategories?.FirstOrDefault(x => x.Code.ToLower() == value.ToLower());
             if (user == null)
             {
                 return new ResultWithMessage { Success = false };
@@ -348,12 +314,18 @@ namespace COMPTOIR.Services
 
         public async Task<ResultWithMessage> CheckProductCode(string value)
         {
-            var user = _db.Products?.FirstOrDefault(x => x.Code.ToLower() == value.ToLower());
+            var user = _db.Products?.FirstOrDefault(x => x.Code == int.Parse(value.ToLower()));
             if (user == null)
             {
                 return new ResultWithMessage { Success = false };
             }
             return new ResultWithMessage { Success = true };
+        }
+
+        public ResultWithMessage GenerateCode()
+        {
+            var newcode = (_db.Products.Select(x => x.Code).Max() ??0) + 1 ;
+            return new ResultWithMessage { Success = true, Result = newcode };
         }
     }
 }

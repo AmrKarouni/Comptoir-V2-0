@@ -38,7 +38,7 @@ namespace COMPTOIR.Contexts
                 entity.HasIndex(e => new { e.Name})
                 .IsUnique();
             });
-
+            
             modelBuilder.Entity<ProductSubCategory>(entity =>
             {
                 entity.HasIndex(e => new { e.Name })
@@ -48,6 +48,12 @@ namespace COMPTOIR.Contexts
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.HasIndex(e => new { e.Name })
+                .IsUnique();
+            });
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.HasIndex(e => new { e.Code })
                 .IsUnique();
             });
 

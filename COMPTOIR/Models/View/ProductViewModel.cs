@@ -13,14 +13,12 @@ namespace COMPTOIR.Models.View
         {
             Id = model.Id;
             Name = model.Name;
-            Code = model.Code;
             Description = model.Description;
             IsConsumable = model.IsConsumable;
         }
 
         public int Id { get; set; }
         public string? Name { get; set; }
-        public string? Code { get; set; }
         public string? Description { get; set; }
         public bool IsConsumable { get; set; }
     }
@@ -36,21 +34,17 @@ namespace COMPTOIR.Models.View
         {
             Id = model.Id;
             Name = model.Name;
-            Code = model.Code;
             IsGarbage = model.IsGarbage;
             CategoryId = model.CategoryId;
             CategoryName = model.Category?.Name;
-            CategoryCode = model.Category?.Code;
             IsConsumable = model.Category?.IsConsumable;
         }
 
         public int Id { get; set; }
         public string? Name { get; set; }
-        public string? Code { get; set; }
         public bool? IsGarbage { get; set; }
         public int? CategoryId { get; set; }
         public string? CategoryName { get; set; }
-        public string? CategoryCode { get; set; }
         public bool? IsConsumable { get; set; }
     }
 
@@ -72,17 +66,15 @@ namespace COMPTOIR.Models.View
             Price = product.Recipes.FirstOrDefault() != null ? product.Recipes.FirstOrDefault().Price : 0;
             SubCategoryId = product.SubCategoryId;
             SubCategoryName = product.SubCategory?.Name;
-            SubCategoryCode = product.SubCategory?.Code;
             IsGarbage = product.SubCategory?.IsGarbage;
             CategoryId = product.SubCategory?.CategoryId;
             CategoryName = product.SubCategory?.Category?.Name;
-            CategoryCode = product.SubCategory?.Category?.Code;
             IsConsumable = product.SubCategory?.Category?.IsConsumable;
         }
 
         public int Id { get; set; }
         public string? Name { get; set; }
-        public string? Code { get; set; }
+        public int? Code { get; set; }
         public string? Manifacturer { get; set; }
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
@@ -91,14 +83,13 @@ namespace COMPTOIR.Models.View
         public DateTime CreatedDate { get; set; }
         public string? UnitName { get; set; }
         public double? Price { get; set; } = 0;
+
         public int SubCategoryId { get; set; }
         public string? SubCategoryName { get; set; }
-        public string? SubCategoryCode { get; set; }
         public bool? IsGarbage { get; set; }
 
         public int? CategoryId { get; set; }
         public string? CategoryName { get; set; }
-        public string? CategoryCode { get; set; }
         public bool? IsConsumable { get; set; }
     }
 

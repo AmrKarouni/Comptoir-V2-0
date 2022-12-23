@@ -15,7 +15,7 @@ namespace COMPTOIR.Services
         public ResultWithMessage GetCustomers(FilterModel model)
         {
             var customers = _db.Customers?.Where(z => z.IsDeleted == false);
-            if (model.SearchQuery != null)
+            if (!string.IsNullOrEmpty(model.SearchQuery))
             {
                 customers = customers?.Where(x => x.Name == model.SearchQuery ||
                                                x.Addresses01 == model.SearchQuery ||

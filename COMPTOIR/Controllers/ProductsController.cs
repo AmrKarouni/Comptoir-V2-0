@@ -87,12 +87,7 @@ namespace COMPTOIR.Controllers
             var response = await _productService.CheckCategoryName(value);
             return Ok(response.Success);
         }
-        [HttpGet("Categories/check-code")]
-        public async Task<IActionResult> CheckCategoryCode(string value)
-        {
-            var response = await _productService.CheckCategoryCode(value);
-            return Ok(response.Success);
-        }
+        
 
         [HttpGet("SubCategories")]
         public IActionResult GetAllProductSubCategories()
@@ -151,14 +146,6 @@ namespace COMPTOIR.Controllers
             var response = await _productService.CheckSubCategoryName(value);
             return Ok(response.Success);
         }
-        [HttpGet("SubCategories/check-code")]
-        public async Task<IActionResult> CheckSubCategoryCode(string value)
-        {
-            var response = await _productService.CheckSubCategoryCode(value);
-            return Ok(response.Success);
-        }
-
-
 
         [HttpPost("filter")]
         public IActionResult GetAllProducts(FilterModel model)
@@ -246,6 +233,13 @@ namespace COMPTOIR.Controllers
         {
             var response = await _productService.CheckProductCode(value);
             return Ok(response.Success);
+        }
+
+        [HttpGet("generate-code")]
+        public IActionResult GenerateCode()
+        {
+            var response = _productService.GenerateCode();
+            return Ok(response.Result);
         }
     }
 }
