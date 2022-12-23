@@ -25,48 +25,53 @@ namespace COMPTOIR.Services
             _recipeService = recipeService;
         }
 
+        public ResultWithMessage GetAllUnits()
+        {
+            var list = _db.Units.Where(x => x.IsDeleted == false);
+            return new ResultWithMessage { Success = true, Result = list };
+        }
+
         public ResultWithMessage GetProducts(FilterModel model)
         {
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             var products = _db.Products?.Include(x => x.SubCategory)
                                         .ThenInclude(y => y.Category)
-                                        .Where(z => z.IsDeleted == false)
-                                        .Select(p => new ProductViewModel(p, hostpath));
+                                        .Where(z => z.IsDeleted == false);
             if (model.SearchQuery != null)
             {
-                if (int.TryParse(model.SearchQuery,out int code))
+                if (int.TryParse(model.SearchQuery, out int code))
                 {
-                    products = products.Where(x => x.Code == model.SearchQuery || 
-                                                   x.SubCategoryCode == model.SearchQuery ||
-                                                   x.CategoryCode == model.SearchQuery);
+                    products = products.Where(x => x.Code == model.SearchQuery ||
+                                                   x.SubCategory.Code == model.SearchQuery ||
+                                                   x.SubCategory.Category.Code == model.SearchQuery);
                 }
                 else
                 {
-                    products = products.Where(x => x.Name == model.SearchQuery || 
-                                                   x.SubCategoryName == model.SearchQuery || 
-                                                   x.CategoryName == model.SearchQuery);
+                    products = products.Where(x => x.Name == model.SearchQuery ||
+                                                   x.SubCategory.Name == model.SearchQuery ||
+                                                   x.SubCategory.Category.Name == model.SearchQuery);
                 }
             }
             var dataSize = products.Count();
-            products = products.Skip(model.PageSize * model.PageIndex).Take(model.PageSize);
             var sortProperty = typeof(ProductViewModel).GetProperty(model?.Sort ?? "Id");
-            if (products == null)
-            {
-                return new ResultWithMessage();
-            }
             if (model?.Order == "asc")
             {
-                products?.OrderBy(x => sortProperty.GetValue(x));
+                products?.Select(p => new ProductViewModel(p, hostpath)).OrderBy(x => sortProperty.GetValue(x));
             }
-            products?.OrderByDescending(x => sortProperty.GetValue(x));
+            else
+            {
+                products?.Select(p => new ProductViewModel(p, hostpath))?.OrderByDescending(x => sortProperty.GetValue(x));
+            }
 
+            var result = products.Skip(model.PageSize * model.PageIndex).Take(model.PageSize);
             return new ResultWithMessage
             {
                 Success = true,
                 Message = "",
-                Result = new ObservableData(products, dataSize)
+                Result = new ObservableData(result, dataSize)
             };
         }
+
 
         public ResultWithMessage GetAllProductCategories()
         {
@@ -78,7 +83,7 @@ namespace COMPTOIR.Services
 
         public ResultWithMessage GetProductCategoryById(int id)
         {
-            var cat = _db.ProductCategories?.Find(id);
+            var cat = _db.ProductCategories?.FirstOrDefault(x => x.Id == id);
             if (cat == null)
             {
                 return new ResultWithMessage { Success = false , Message = $@"Product Category ID#{id} No Found !!!" };
@@ -134,7 +139,7 @@ namespace COMPTOIR.Services
 
         public ResultWithMessage GetProductSubCategoryById(int id)
         {
-            var subcat = _db.ProductSubCategories?.Find(id);
+            var subcat = _db.ProductSubCategories?.FirstOrDefault(x => x.Id == id);
             if (subcat == null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product SubCategory ID#{id} No Found !!!" };
@@ -184,7 +189,7 @@ namespace COMPTOIR.Services
 
         public ResultWithMessage GetProductById(int id)
         {
-            var prod = _db.Products?.Find(id);
+            var prod = _db.Products?.FirstOrDefault(x => x.Id == id);
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             if (prod == null)
             {
@@ -217,6 +222,7 @@ namespace COMPTOIR.Services
             _db.SaveChanges();
             var res = _db.Products.Include(x => x.SubCategory).ThenInclude(x => x.Category).FirstOrDefault(x => x.Id == prod.Id);
             var prodviewmodel = new ProductViewModel(res, hostpath);
+            prodviewmodel.Price = model.Price;
             return new ResultWithMessage { Success = true, Result = prodviewmodel };
         }
 
@@ -265,20 +271,27 @@ namespace COMPTOIR.Services
             {
                 return new ResultWithMessage { Success = false, Message = $@"Bad Request" };
             }
-            var prod = _db.Products?.FirstOrDefault(x => x.Id == id);
-            if (prod == null)
+            var oldproduct = _db.Products?.FirstOrDefault(x => x.Id == id);
+            if (oldproduct == null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product {model.Name} Not Found !!!" };
             }
-            _db.Entry(prod).State = EntityState.Detached;
+            _db.Entry(oldproduct).State = EntityState.Detached;
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
-            var tempImgUrl = prod.ImageUrl;
+            var tempImgUrl = oldproduct.ImageUrl;
             var tempProd = new Product(model);
+            var recipe = _db.Recipes.FirstOrDefault(x => x.ProductId == model.Id);
+            if (recipe !=  null)
+            {
+                recipe.Price = model.Price;
+                _db.Entry(recipe).State = EntityState.Modified;
+            }
             tempProd.ImageUrl = tempImgUrl;
             _db.Entry(tempProd).State = EntityState.Modified;
             _db.SaveChanges();
             var res = _db.Products.Include(x => x.SubCategory).ThenInclude(x => x.Category).FirstOrDefault(x => x.Id == model.Id);
             var prodviewmodel = new ProductViewModel(res, hostpath);
+            prodviewmodel.Price = model.Price;
             return new ResultWithMessage { Success = true, Result = prodviewmodel };
         }
 

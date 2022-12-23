@@ -69,6 +69,7 @@ namespace COMPTOIR.Models.View
             IsRaw = product.IsRaw;
             CreatedDate = product.CreatedDate;
             UnitName = product.UnitName;
+            Price = 0;
             SubCategoryId = product.SubCategoryId;
             SubCategoryName = product.SubCategory?.Name;
             SubCategoryCode = product.SubCategory?.Code;
@@ -89,7 +90,7 @@ namespace COMPTOIR.Models.View
         public bool IsRaw { get; set; }
         public DateTime CreatedDate { get; set; }
         public string? UnitName { get; set; }
-
+        public double? Price { get; set; } = 0;
         public int SubCategoryId { get; set; }
         public string? SubCategoryName { get; set; }
         public string? SubCategoryCode { get; set; }

@@ -100,7 +100,7 @@ namespace COMPTOIR.Models.AppModels
         [ForeignKey("SubCategory")]
         public int SubCategoryId { get; set; }
         public virtual ProductSubCategory? SubCategory { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public virtual ICollection <Recipe>? Recipes { get; set; }
 }
 }

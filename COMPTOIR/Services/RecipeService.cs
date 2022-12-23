@@ -23,7 +23,7 @@ namespace COMPTOIR.Services
             recipe.Name = model.Name;
             recipe.Product = model;
             recipe.Amount = 1;
-            recipe.PlaceId = int.Parse(_configuration.GetValue<string>("DefaultPlace"));
+            recipe.PlaceId = int.Parse(_configuration.GetValue<string>("DefaultProduction"));
             recipe.Price = price;
             recipe.RecipeProducts?.Add(new RecipeProduct(recipe));
             return recipe;

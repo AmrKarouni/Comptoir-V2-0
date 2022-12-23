@@ -26,6 +26,6 @@ namespace COMPTOIR.Models.AppModels
         public string? Addresses03 { get; set; }
         public string? Addresses04 { get; set; }
         public string? Addresses05 { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

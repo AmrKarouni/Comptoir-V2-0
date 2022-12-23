@@ -18,7 +18,18 @@ namespace COMPTOIR.Controllers
             _productService = productService;
         }
 
-        [HttpGet("Categories")]
+        [HttpGet("Units")]
+        public IActionResult GetAllUnits()
+        {
+            var service = _productService.GetAllUnits();
+            if (!string.IsNullOrEmpty(service.Message))
+            {
+                return BadRequest(new { message = service.Message });
+            }
+            return Ok(service.Result);
+        }
+
+            [HttpGet("Categories")]
         public IActionResult GetAllProductCategories()
         {
             var service = _productService.GetAllProductCategories();

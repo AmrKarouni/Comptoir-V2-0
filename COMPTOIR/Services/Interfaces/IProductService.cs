@@ -7,6 +7,7 @@ namespace COMPTOIR.Services.Interfaces
 {
     public interface IProductService
     {
+        ResultWithMessage GetAllUnits();
         ResultWithMessage GetProducts(FilterModel model);
 
         ResultWithMessage GetAllProductCategories();

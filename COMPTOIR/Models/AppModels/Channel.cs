@@ -16,7 +16,7 @@ namespace COMPTOIR.Models.AppModels
         public virtual Place? Place { get; set; }
         public virtual ICollection<Channel>? Channels { get; set; }
         public virtual ICollection<Tax>? Taxes { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 
     public class Channel
@@ -36,6 +36,6 @@ namespace COMPTOIR.Models.AppModels
         public int? Seats { get; set; }
         public bool IsAnonymous { get; set; } = true;
         public bool IsMultiple { get; set; } = true;
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }
