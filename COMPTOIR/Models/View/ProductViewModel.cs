@@ -64,12 +64,12 @@ namespace COMPTOIR.Models.View
             Code = product.Code;
             Manifacturer = product.Manifacturer;
             Description = product.Description;
-            ImageUrl = hostpath + product.ImageUrl; ;
+            ImageUrl = !string.IsNullOrEmpty(product.ImageUrl) ? hostpath + product.ImageUrl : "";
             IsFinal = product.IsFinal;
             IsRaw = product.IsRaw;
             CreatedDate = product.CreatedDate;
             UnitName = product.UnitName;
-            Price = 0;
+            Price = product.Recipes.FirstOrDefault() != null ? product.Recipes.FirstOrDefault().Price : 0;
             SubCategoryId = product.SubCategoryId;
             SubCategoryName = product.SubCategory?.Name;
             SubCategoryCode = product.SubCategory?.Code;

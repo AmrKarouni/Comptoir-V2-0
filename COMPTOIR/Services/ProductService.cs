@@ -36,6 +36,7 @@ namespace COMPTOIR.Services
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             var products = _db.Products?.Include(x => x.SubCategory)
                                         .ThenInclude(y => y.Category)
+                                        .Include(r => r.Recipes)
                                         .Where(z => z.IsDeleted == false);
             if (!string.IsNullOrEmpty(model.SearchQuery))
             {
