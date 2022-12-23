@@ -14,7 +14,7 @@
         public string? UnitName { get; set; }
         public int SubCategoryId { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public double? Price { get; set; } = 0;
+        public double Price { get; set; } = 0;
 
     }
 
