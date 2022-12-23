@@ -176,18 +176,19 @@ namespace COMPTOIR.Services
 
         public ResultWithMessage GetProductById(int id)
         {
-            var prod = _db.Products?.FirstOrDefault(x => x.Id == id);
+            var prod = _db.Products?.Include(x => x.Recipes)
+                                    .Include(s => s.SubCategory)
+                                    .ThenInclude(c => c.Category)
+                                    .FirstOrDefault(x => x.Id == id);
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             if (prod == null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Product  ID#{id} No Found !!!" };
             }
-            if (prod.ImageUrl != null)
-            {
-                prod.ImageUrl = hostpath + prod.ImageUrl;
-            }
-            return new ResultWithMessage { Success = true, Result = prod };
+            var res = new ProductViewModel(prod, hostpath);
+            return new ResultWithMessage { Success = true, Result = res };
         }
+
         public async Task<ResultWithMessage> PostProductAsync(ProductBindingModel model)
         {
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
