@@ -22,6 +22,7 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IPosService, PosService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddTransient<ApplicationDbContextSeed>();
 builder.Services.AddDbContext<ApplicationDbContext>(x =>
 {

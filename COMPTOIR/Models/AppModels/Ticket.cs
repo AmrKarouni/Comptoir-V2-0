@@ -1,4 +1,5 @@
-﻿using COMPTOIR.Models.Identity;
+﻿using COMPTOIR.Models.Binding;
+using COMPTOIR.Models.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,14 +7,30 @@ namespace COMPTOIR.Models.AppModels
 {
     public class Ticket
     {
+        public Ticket()
+        {
+
+        }
+        public Ticket(TicketBindingModel model)
+        {
+            Id = model.Id;
+            ChannelId = model.ChannelId;
+            CustomerId = model.CustomerId;
+            CustomerAddress = model.CustomerAddress;
+            IsVip = model.IsVip;
+            Note = model.Note;
+            DiscountId = model.DiscountId;
+            Transactions = new List<Transaction>();
+        }
+
         public int Id { get; set; }
         [Required]
-        public DateTime Date { get; set; }
-        public DateTime? ConfirmationDate { get; set; }
-        public DateTime? DoneDate { get; set; }
+        public DateTime Date { get; set; } = DateTime.UtcNow;
+        public DateTime? ConfirmationDate { get; set; } = DateTime.UtcNow;
+        public DateTime? DoneDate { get; set; } = DateTime.UtcNow;
         public DateTime? DeliveryDate { get; set; }
-        public DateTime? OrderDate { get; set; }
-        public DateTime CurrentDay { get; set; }
+        public DateTime? OrderDate { get; set; } = DateTime.UtcNow;
+        public DateTime? CurrentDay { get; set; } = DateTime.UtcNow.Date;
         [ForeignKey("Channel")]
         public int? ChannelId { get; set; }
         public virtual Channel? Channel { get; set; }
@@ -21,7 +38,6 @@ namespace COMPTOIR.Models.AppModels
         public int? CustomerId { get; set; }
         public virtual Customer? Customer { get; set; }
         public string? CustomerAddress { get; set; }
-
 
         [ForeignKey("IssuedUser")]
         public string? IssuedBy { get; set; }
@@ -47,25 +63,37 @@ namespace COMPTOIR.Models.AppModels
         public int? CaptainId { get; set; }
         //public Captain? Captain { get; set; }
   
-        public bool IsConfirmed { get; set; } = false;
-        public bool IsCancelled { get; set; } = false;
-        public bool IsDone { get; set; } = false;
-        public bool IsDelivered { get; set; } = false;
-        public bool IsVip { get; set; } = false;
-        public bool IsChild { get; set; } = false;
-        public int? ParentId { get; set; }
-        public int TicketNumber { get; set; }
+        public bool? IsConfirmed { get; set; } = true;
+        public bool? IsCancelled { get; set; } = false;
+        public bool? IsDone { get; set; } = true;
+        public bool? IsDelivered { get; set; } = false;
+        public bool? IsVip { get; set; } = false;
+        public int? TicketNumber { get; set; }
         public string? Note { get; set; }
         [ForeignKey("Discount")]
         public int? DiscountId { get; set; }
         public virtual Discount? Discount { get; set; }
         public virtual ICollection<Tax>? Taxes { get; set; }
         public virtual ICollection<TicketRecipe>? TicketRecipes { get; set; }
-        public bool IsDeleted { get; set; }
+        public virtual ICollection<Transaction>? Transactions { get; set; }
     }
 
     public class TicketRecipe
     {
+        public TicketRecipe()
+        {
+
+        }
+
+        public TicketRecipe(TicketRecipeBindingModel model)
+        {
+            RecipeId = model.RecipeId;
+            PlaceId = model.PlaceId;
+            Count = model.Count;
+            Note = model.Note;
+            IsFree = model.IsFree;
+            UnitPrice = model.UnitPrice;
+        }
         public int Id { get; set; }
         [ForeignKey("Ticket")]
         public int? TicketId { get; set; }
@@ -74,15 +102,15 @@ namespace COMPTOIR.Models.AppModels
         public int? RecipeId { get; set; }
         public virtual Recipe? Recipe { get; set; }
         [ForeignKey("Place")]
-        public int PlaceId { get; set; }
+        public int? PlaceId { get; set; }
         public virtual Place? Place { get; set; }
         public double Count { get; set; }
-        public bool IsConfirmed { get; set; }
-        public bool IsDone { get; set; }
-        public bool IsServed { get; set; }
+        public bool? IsConfirmed { get; set; }
+        public bool? IsDone { get; set; }
+        public bool? IsServed { get; set; }
         public string? Note { get; set; }
         public virtual ICollection<ExtraProduct>? ExtraProducts { get; set; }
-        public bool IsFree { get; set; } = false;
-        public double UnitPrice { get; set; } = 0;
+        public bool? IsFree { get; set; } = false;
+        public double? UnitPrice { get; set; } 
     }
 }

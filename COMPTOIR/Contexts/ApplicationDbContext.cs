@@ -28,6 +28,9 @@ namespace COMPTOIR.Contexts
         public DbSet<ExtraProductCategory>? ExtraProductCategories { get; set; }
         public DbSet<ExtraProduct>? ExtraProducts { get; set; }
         public DbSet<Customer>? Customers { get; set; }
+        public DbSet<TransactionCategory>? TransactionCategories { get; set; }
+        public DbSet<Transaction>? Transactions { get; set; }
+        public DbSet<TransactionProduct>? TransactionProducts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Write Fluent API configurations here
@@ -99,6 +102,11 @@ namespace COMPTOIR.Contexts
             });
 
             modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.HasIndex(e => new { e.Name })
+                .IsUnique();
+            });
+            modelBuilder.Entity<TransactionCategory>(entity =>
             {
                 entity.HasIndex(e => new { e.Name })
                 .IsUnique();

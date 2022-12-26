@@ -4,6 +4,7 @@ using COMPTOIR.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace COMPTOIR.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221225172522_Tickets-transactions")]
+    partial class Ticketstransactions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -640,6 +642,9 @@ namespace COMPTOIR.Migrations
                     b.Property<bool?>("IsCancelled")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("IsChild")
+                        .HasColumnType("bit");
+
                     b.Property<bool?>("IsConfirmed")
                         .HasColumnType("bit");
 
@@ -660,6 +665,9 @@ namespace COMPTOIR.Migrations
 
                     b.Property<DateTime?>("OrderDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ServedBy")
                         .HasColumnType("nvarchar(450)");
@@ -696,7 +704,7 @@ namespace COMPTOIR.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<double>("Count")
+                    b.Property<double?>("Count")
                         .HasColumnType("float");
 
                     b.Property<bool?>("IsConfirmed")
@@ -817,6 +825,9 @@ namespace COMPTOIR.Migrations
                     b.Property<int?>("TicketId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TicketParentId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ToPlaceId")
                         .HasColumnType("int");
 
@@ -844,6 +855,8 @@ namespace COMPTOIR.Migrations
                     b.HasIndex("RecipeId");
 
                     b.HasIndex("TicketId");
+
+                    b.HasIndex("TicketParentId");
 
                     b.HasIndex("ToPlaceId");
 
@@ -876,9 +889,6 @@ namespace COMPTOIR.Migrations
 
                     b.HasKey("Name");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("TransactionCategories");
                 });
 
@@ -890,13 +900,13 @@ namespace COMPTOIR.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<double>("Amount")
+                    b.Property<double?>("Amount")
                         .HasColumnType("float");
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TransactionId")
+                    b.Property<int?>("TransactionId")
                         .HasColumnType("int");
 
                     b.Property<double?>("UnitPrice")
@@ -1405,8 +1415,12 @@ namespace COMPTOIR.Migrations
                         .HasForeignKey("RecipeId");
 
                     b.HasOne("COMPTOIR.Models.AppModels.Ticket", "Ticket")
-                        .WithMany("Transactions")
+                        .WithMany()
                         .HasForeignKey("TicketId");
+
+                    b.HasOne("COMPTOIR.Models.AppModels.Ticket", "TicketParent")
+                        .WithMany()
+                        .HasForeignKey("TicketParentId");
 
                     b.HasOne("COMPTOIR.Models.AppModels.Place", "ToPlace")
                         .WithMany()
@@ -1432,6 +1446,8 @@ namespace COMPTOIR.Migrations
 
                     b.Navigation("Ticket");
 
+                    b.Navigation("TicketParent");
+
                     b.Navigation("ToPlace");
                 });
 
@@ -1443,9 +1459,7 @@ namespace COMPTOIR.Migrations
 
                     b.HasOne("COMPTOIR.Models.AppModels.Transaction", "Transaction")
                         .WithMany("TransactionProducts")
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TransactionId");
 
                     b.Navigation("Product");
 
@@ -1621,8 +1635,6 @@ namespace COMPTOIR.Migrations
             modelBuilder.Entity("COMPTOIR.Models.AppModels.Ticket", b =>
                 {
                     b.Navigation("TicketRecipes");
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("COMPTOIR.Models.AppModels.TicketRecipe", b =>
