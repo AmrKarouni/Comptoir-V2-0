@@ -28,7 +28,7 @@ namespace COMPTOIR.Models.AppModels
         public string? Name { get; set; }
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
-        public virtual ChannelCategory? Category { get; set; }
+        public virtual ChannelCategory Category { get; set; }
         public virtual ICollection<Ticket>? Tickets { get; set; }
         public int? PositionX { get; set; }
         public int? PositionY { get; set; }

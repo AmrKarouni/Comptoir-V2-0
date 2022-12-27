@@ -53,6 +53,6 @@ namespace COMPTOIR.Models.AppModels
         public int? ProductId { get; set; }
         public virtual Product? Product { get; set; }
         public double Amount { get; set; }
-        public double? UnitCost { get; set; } = 0;
+        public double UnitCost { get; set; } = 0;
     }
 }

@@ -8,5 +8,10 @@ namespace COMPTOIR.Services.Interfaces
     {
         ResultWithMessage GetAllPosRecipes();
         Task<ResultWithMessage> PostPosTicket(TicketBindingModel model);
+        Task<ResultWithMessage> PutPosTicket(int id,TicketBindingModel model);
+        Task<ResultWithMessage> DeliverPosTicket(TicketDeliverBindingModel model);
+        ResultWithMessage GetTicketById(int id);
+        ResultWithMessage GetTodayPendingTickets();
+        ResultWithMessage GetTodayPendingTicketsByChannelId(int channelId);
     }
 }

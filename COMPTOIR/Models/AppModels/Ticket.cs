@@ -68,11 +68,14 @@ namespace COMPTOIR.Models.AppModels
         public bool? IsDone { get; set; } = true;
         public bool? IsDelivered { get; set; } = false;
         public bool? IsVip { get; set; } = false;
-        public int? TicketNumber { get; set; }
+        public string? TicketNumber { get; set; }
         public string? Note { get; set; }
         [ForeignKey("Discount")]
         public int? DiscountId { get; set; }
         public virtual Discount? Discount { get; set; }
+        public bool IsPaid { get; set; } = false;
+        public double? TotalAmount { get; set; } = 0;
+        public double? TotalPaidAmount { get; set; } = 0;
         public virtual ICollection<Tax>? Taxes { get; set; }
         public virtual ICollection<TicketRecipe>? TicketRecipes { get; set; }
         public virtual ICollection<Transaction>? Transactions { get; set; }
@@ -88,7 +91,6 @@ namespace COMPTOIR.Models.AppModels
         public TicketRecipe(TicketRecipeBindingModel model)
         {
             RecipeId = model.RecipeId;
-            PlaceId = model.PlaceId;
             Count = model.Count;
             Note = model.Note;
             IsFree = model.IsFree;
@@ -101,9 +103,6 @@ namespace COMPTOIR.Models.AppModels
         [ForeignKey("Recipe")]
         public int? RecipeId { get; set; }
         public virtual Recipe? Recipe { get; set; }
-        [ForeignKey("Place")]
-        public int? PlaceId { get; set; }
-        public virtual Place? Place { get; set; }
         public double Count { get; set; }
         public bool? IsConfirmed { get; set; }
         public bool? IsDone { get; set; }
@@ -111,6 +110,6 @@ namespace COMPTOIR.Models.AppModels
         public string? Note { get; set; }
         public virtual ICollection<ExtraProduct>? ExtraProducts { get; set; }
         public bool? IsFree { get; set; } = false;
-        public double? UnitPrice { get; set; } 
+        public double UnitPrice { get; set; } = 0;
     }
 }

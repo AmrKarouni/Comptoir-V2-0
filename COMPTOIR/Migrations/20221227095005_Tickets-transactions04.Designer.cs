@@ -4,6 +4,7 @@ using COMPTOIR.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace COMPTOIR.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221227095005_Tickets-transactions04")]
+    partial class Ticketstransactions04
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -550,7 +552,7 @@ namespace COMPTOIR.Migrations
                     b.Property<int?>("RecipeId")
                         .HasColumnType("int");
 
-                    b.Property<double>("UnitCost")
+                    b.Property<double?>("UnitCost")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -667,8 +669,8 @@ namespace COMPTOIR.Migrations
                     b.Property<string>("ServedBy")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("TicketNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("TicketNumber")
+                        .HasColumnType("int");
 
                     b.Property<double?>("TotalAmount")
                         .HasColumnType("float");
@@ -723,6 +725,9 @@ namespace COMPTOIR.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PlaceId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("RecipeId")
                         .HasColumnType("int");
 
@@ -733,6 +738,8 @@ namespace COMPTOIR.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PlaceId");
 
                     b.HasIndex("RecipeId");
 
@@ -903,7 +910,7 @@ namespace COMPTOIR.Migrations
                     b.Property<int>("TransactionId")
                         .HasColumnType("int");
 
-                    b.Property<double>("UnitPrice")
+                    b.Property<double?>("UnitPrice")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -1351,6 +1358,10 @@ namespace COMPTOIR.Migrations
 
             modelBuilder.Entity("COMPTOIR.Models.AppModels.TicketRecipe", b =>
                 {
+                    b.HasOne("COMPTOIR.Models.AppModels.Place", "Place")
+                        .WithMany()
+                        .HasForeignKey("PlaceId");
+
                     b.HasOne("COMPTOIR.Models.AppModels.Recipe", "Recipe")
                         .WithMany()
                         .HasForeignKey("RecipeId");
@@ -1358,6 +1369,8 @@ namespace COMPTOIR.Migrations
                     b.HasOne("COMPTOIR.Models.AppModels.Ticket", "Ticket")
                         .WithMany("TicketRecipes")
                         .HasForeignKey("TicketId");
+
+                    b.Navigation("Place");
 
                     b.Navigation("Recipe");
 

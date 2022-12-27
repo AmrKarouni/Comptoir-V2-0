@@ -24,9 +24,9 @@ namespace COMPTOIR.Models.AppModels
 
         }
 
-        public Transaction(int placeFromId,int placeToId,List<TransactionProduct> transactionProducts)
+        public Transaction(int placeFromId,int placeToId,string categoryName, List<TransactionProduct> transactionProducts)
         {
-            CategoryName = "Transfer";
+            CategoryName = categoryName;
             FromPlaceId = placeFromId;
             ToPlaceId = placeToId;
             Date = DateTime.UtcNow;
@@ -125,6 +125,6 @@ namespace COMPTOIR.Models.AppModels
         public int? ProductId { get; set; }
         public virtual Product? Product { get; set; }
         public double Amount { get; set; }
-        public double? UnitPrice { get; set; } = 0;
+        public double UnitPrice { get; set; } = 0;
     }
 }

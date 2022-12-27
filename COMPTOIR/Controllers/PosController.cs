@@ -25,12 +25,67 @@ namespace COMPTOIR.Controllers
             return Ok(service.Result);
         }
         [HttpPost("Tickets")]
-        public IActionResult PostPosTicket(TicketBindingModel model)
+        public async Task<IActionResult> PostPosTicket(TicketBindingModel model)
         {
-            var service = _posService.PostPosTicket(model);
-            if (!string.IsNullOrEmpty(service.Result.Message))
+            var service = await _posService.PostPosTicket(model);
+            if (!string.IsNullOrEmpty(service.Message))
             {
-                return BadRequest(new { message = service.Result.Result });
+                return BadRequest(new { message = service.Result });
+            }
+            return Ok(service.Result);
+        }
+
+        [HttpGet("Tickets/{id}")]
+        public IActionResult GetTicketById(int id)
+        {
+            var service = _posService.GetTicketById(id);
+            if (!string.IsNullOrEmpty(service.Message))
+            {
+                return BadRequest(new { message = service.Result });
+            }
+            return Ok(service.Result);
+        }
+
+
+        [HttpPut("Tickets/{id}")]
+        public async Task<IActionResult> PutPosTicket(int id,TicketBindingModel model)
+        {
+            var service = await _posService.PutPosTicket(id,model);
+            if (!string.IsNullOrEmpty(service.Message))
+            {
+                return BadRequest(new { message = service.Result});
+            }
+            return Ok(service.Result);
+        }
+
+        [HttpPost("Tickets/Pay")]
+        public async Task<IActionResult> DeliverPosTicket(TicketDeliverBindingModel model)
+        {
+            var service = await _posService.DeliverPosTicket(model);
+            if (!string.IsNullOrEmpty(service.Message))
+            {
+                return BadRequest(new { message = service.Result});
+            }
+            return Ok(service.Result);
+        }
+
+        [HttpGet("Tickets/Pending")]
+        public IActionResult GetTodayPendingTickets()
+        {
+            var service = _posService.GetTodayPendingTickets();
+            if (!string.IsNullOrEmpty(service.Message))
+            {
+                return BadRequest(new { message = service.Result });
+            }
+            return Ok(service.Result);
+        }
+        [HttpGet("Tickets/Pending/{channelId}")]
+        public IActionResult GetTodayPendingTicketsByChannelId(int channelId)
+        {
+            var service = _posService.GetTodayPendingTicketsByChannelId(channelId);
+            if (!string.IsNullOrEmpty(service.Message))
+            {
+                return BadRequest(new { message = service.Result });
             }
             return Ok(service.Result);
         }

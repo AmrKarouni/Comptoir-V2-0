@@ -4,6 +4,7 @@ using COMPTOIR.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace COMPTOIR.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221227161143_Tickets-transactions05")]
+    partial class Ticketstransactions05
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -667,8 +669,8 @@ namespace COMPTOIR.Migrations
                     b.Property<string>("ServedBy")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("TicketNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("TicketNumber")
+                        .HasColumnType("int");
 
                     b.Property<double?>("TotalAmount")
                         .HasColumnType("float");
