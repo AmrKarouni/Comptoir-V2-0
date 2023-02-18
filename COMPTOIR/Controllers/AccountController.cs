@@ -4,6 +4,7 @@ using COMPTOIR.Services.Interfaces;
 using Email.Service.Models;
 using Email.Service.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 
@@ -15,10 +16,14 @@ namespace COMPTOIR.Controllers
     {
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
-        public AccountController(IUserService userService, IEmailService emailService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public AccountController(IUserService userService,
+                                 IEmailService emailService,
+                                 UserManager<ApplicationUser> userManager)
         {
             _userService = userService;
             _emailService = emailService;
+            _userManager = userManager; 
         }
 
         [HttpPost("register")]
@@ -81,6 +86,11 @@ namespace COMPTOIR.Controllers
         [HttpGet("resend-confirm-email")]
         public async Task<ActionResult> ResendConfirmEmail(string email)
         {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return BadRequest("User Not Found");
+            }
             var generator = await _userService.GenerateEmailConfirmTokenAsync(email);
             if (!generator.Success)
             {
@@ -88,7 +98,7 @@ namespace COMPTOIR.Controllers
             }
             var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token = generator.Result, email = email }, Request.Scheme);
             var body = (
-                    "Dear Mr. / Ms. , \n" +
+                    "Dear Mr. / Ms. ," + user.UserName +" \n" +
                     "You have been sent this email because you created an account on our website.\n" +
                     "Please click on <a href =\"" + confirmationLink + "\"> this link </a> to confirm your email address is correct. ");
             var message =
