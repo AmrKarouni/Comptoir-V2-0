@@ -226,7 +226,7 @@ namespace COMPTOIR.Controllers
 
         //[Authorize(Roles = "SuperUser,Administrator")]
         [HttpGet("revoke-token/{id}")]
-        public async Task<IActionResult> RevokeToken(string id)
+        public async Task<IActionResult> RevokeTokenById(string id)
         {
             // accept token from request body or cookie
             if (string.IsNullOrEmpty(id))
@@ -252,7 +252,7 @@ namespace COMPTOIR.Controllers
         }
         
         [HttpGet("check-email")]
-        public async Task<IActionResult> CheckUserId(string value)
+        public async Task<IActionResult> CheckEmail(string value)
         {
             var response = await _userService.CheckEmail(value);
             return Ok(response.Success);
