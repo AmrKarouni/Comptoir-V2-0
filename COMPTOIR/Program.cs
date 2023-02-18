@@ -12,7 +12,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-//var testConnectionString = "MochaConnection";
+var MochaConnectionString = "MochaConnection";
 var localConnectionString = "LocalConnection";
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString(localConnectionString);

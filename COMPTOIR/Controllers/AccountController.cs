@@ -100,7 +100,7 @@ namespace COMPTOIR.Controllers
             var body = (
                     "Dear Mr. / Ms. ," + user.UserName +" \n" +
                     "You have been sent this email because you created an account on our website.\n" +
-                    "Please click on <a href =\"" + confirmationLink + "\"> this link </a> to confirm your email address is correct. ");
+                    "Please click on <a href =\"" + confirmationLink + "\"> this link </a> to confirm your email address .");
             var message =
                         new Message(new string[]
                         { email! }, "Confirmation Email From Dune Candles Abu Dhabi", body);
