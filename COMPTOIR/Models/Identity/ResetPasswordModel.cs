@@ -1,8 +1,12 @@
-﻿namespace COMPTOIR.Models.Identity
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace COMPTOIR.Models.Identity
 {
     public class ResetPasswordModel
     {
-        public string? UserName { get; set; }
-        public string? NewPassword { get; set; }
+        [Required(ErrorMessage = "Password is required")]
+        public string? Password { get; set; }
+        public string? Email { get; set; }
+        public string? Token { get; set; }
     }
 }

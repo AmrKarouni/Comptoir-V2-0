@@ -3,6 +3,8 @@ using COMPTOIR.Models.Identity;
 using COMPTOIR.Services;
 using COMPTOIR.Services.Interfaces;
 using COMPTOIR.Settings;
+using Email.Service.Models;
+using Email.Service.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +17,20 @@ var localConnectionString = "LocalConnection";
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString(localConnectionString);
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+
+//Add Configuration For Required Email 
+builder.Services.Configure<IdentityOptions>(
+    opts => opts.SignIn.RequireConfirmedEmail = true);
+
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IPosService, PosService>();
@@ -58,6 +70,13 @@ builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             .SetIsOriginAllowed(origin => true) // allow any origin
             .AllowCredentials();
 }));
+
+
+//Add Email Configurations
+var emailconfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailconfig);
+
+
 // Add services to the container.
 
 builder.Services.AddControllers()

@@ -19,7 +19,7 @@ namespace COMPTOIR.Models.AppModels
             CustomerAddress = model.CustomerAddress;
             IsVip = model.IsVip;
             Note = model.Note;
-            DiscountId = model.DiscountId;
+            Discount = model.Discount;
             Transactions = new List<Transaction>();
         }
 
@@ -29,8 +29,10 @@ namespace COMPTOIR.Models.AppModels
         public DateTime? ConfirmationDate { get; set; } = DateTime.UtcNow;
         public DateTime? DoneDate { get; set; } = DateTime.UtcNow;
         public DateTime? DeliveryDate { get; set; }
+        public DateTime? LastUpdateDate { get; set; }
         public DateTime? OrderDate { get; set; } = DateTime.UtcNow;
         public DateTime? CurrentDay { get; set; } = DateTime.UtcNow.Date;
+
         [ForeignKey("Channel")]
         public int? ChannelId { get; set; }
         public virtual Channel? Channel { get; set; }
@@ -59,6 +61,10 @@ namespace COMPTOIR.Models.AppModels
         public string? DeliveredBy { get; set; }
         public virtual ApplicationUser? DeliveredUser { get; set; }
 
+        [ForeignKey("LastUpdateUser")]
+        public string? LastUpdateBy { get; set; }
+        public virtual ApplicationUser? LastUpdateUser { get; set; }
+
         //[ForeignKey("Captain")]
         public int? CaptainId { get; set; }
         //public Captain? Captain { get; set; }
@@ -70,9 +76,7 @@ namespace COMPTOIR.Models.AppModels
         public bool? IsVip { get; set; } = false;
         public string? TicketNumber { get; set; }
         public string? Note { get; set; }
-        [ForeignKey("Discount")]
-        public int? DiscountId { get; set; }
-        public virtual Discount? Discount { get; set; }
+        public double? Discount { get; set; }
         public bool IsPaid { get; set; } = false;
         public double? TotalAmount { get; set; } = 0;
         public double? TotalPaidAmount { get; set; } = 0;

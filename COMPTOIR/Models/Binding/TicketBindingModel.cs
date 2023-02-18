@@ -17,8 +17,8 @@ namespace COMPTOIR.Models.Binding
             CreatedDate = ticket.Date;
             IsVip = ticket.IsVip;
             Note = ticket.Note;
-            DiscountId = ticket.DiscountId;
-            TicketNumber = ticket.TicketNumber;
+            Discount = ticket.Discount;
+            TicketNumber = ticket.TicketNumber; 
             Recipes = ticket.TicketRecipes.Select(x => new TicketRecipeBindingModel(x)).ToList();
         }
         public int Id { get; set; }
@@ -29,7 +29,7 @@ namespace COMPTOIR.Models.Binding
         public DateTime? CreatedDate { get; set; }
         public bool? IsVip { get; set; } = false;
         public string? Note { get; set; }
-        public int? DiscountId { get; set; }
+        public double? Discount { get; set; }
         public string? TicketNumber { get; set; }
         public List<TicketRecipeBindingModel>? Recipes { get; set; }
     }

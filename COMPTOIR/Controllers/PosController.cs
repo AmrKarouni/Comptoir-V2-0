@@ -1,4 +1,5 @@
 ﻿using COMPTOIR.Models.Binding;
+using COMPTOIR.Models.View;
 using COMPTOIR.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace COMPTOIR.Controllers
         public IActionResult GetAllPosRecipes()
         {
             var service = _posService.GetAllPosRecipes();
-            if (!string.IsNullOrEmpty(service.Message))
+            if (!service.Success)
             {
                 return BadRequest(new { message = service.Message });
             }
@@ -28,9 +29,9 @@ namespace COMPTOIR.Controllers
         public async Task<IActionResult> PostPosTicket(TicketBindingModel model)
         {
             var service = await _posService.PostPosTicket(model);
-            if (!string.IsNullOrEmpty(service.Message))
+            if (!service.Success)
             {
-                return BadRequest(new { message = service.Result });
+                return BadRequest(new { message = service.Message });
             }
             return Ok(service.Result);
         }
@@ -39,9 +40,9 @@ namespace COMPTOIR.Controllers
         public IActionResult GetTicketById(int id)
         {
             var service = _posService.GetTicketById(id);
-            if (!string.IsNullOrEmpty(service.Message))
+            if (!service.Success)
             {
-                return BadRequest(new { message = service.Result });
+                return BadRequest(new { message = service.Message });
             }
             return Ok(service.Result);
         }
@@ -51,9 +52,9 @@ namespace COMPTOIR.Controllers
         public async Task<IActionResult> PutPosTicket(int id,TicketBindingModel model)
         {
             var service = await _posService.PutPosTicket(id,model);
-            if (!string.IsNullOrEmpty(service.Message))
+            if (!service.Success)
             {
-                return BadRequest(new { message = service.Result});
+                return BadRequest(new { message = service.Message });
             }
             return Ok(service.Result);
         }
@@ -62,9 +63,9 @@ namespace COMPTOIR.Controllers
         public async Task<IActionResult> DeliverPosTicket(TicketDeliverBindingModel model)
         {
             var service = await _posService.DeliverPosTicket(model);
-            if (!string.IsNullOrEmpty(service.Message))
+            if (!service.Success)
             {
-                return BadRequest(new { message = service.Result});
+                return BadRequest(new { message = service.Message });
             }
             return Ok(service.Result);
         }
@@ -73,9 +74,9 @@ namespace COMPTOIR.Controllers
         public IActionResult GetTodayPendingTickets()
         {
             var service = _posService.GetTodayPendingTickets();
-            if (!string.IsNullOrEmpty(service.Message))
+            if (!service.Success)
             {
-                return BadRequest(new { message = service.Result });
+                return BadRequest(new { message = service.Message });
             }
             return Ok(service.Result);
         }
@@ -83,9 +84,19 @@ namespace COMPTOIR.Controllers
         public IActionResult GetTodayPendingTicketsByChannelId(int channelId)
         {
             var service = _posService.GetTodayPendingTicketsByChannelId(channelId);
-            if (!string.IsNullOrEmpty(service.Message))
+            if (!service.Success)
             {
-                return BadRequest(new { message = service.Result });
+                return BadRequest(new { message = service.Message });
+            }
+            return Ok(service.Result);
+        }
+        [HttpPost("Tickets/Filter")]
+        public IActionResult GetPosTicketsByFilter(FilterModel model)
+        {
+            var service = _posService.GetPosTicketsByFilter(model);
+            if (!service.Success)
+            {
+                return BadRequest(new { message = service.Message });
             }
             return Ok(service.Result);
         }

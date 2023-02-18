@@ -4,6 +4,7 @@ using COMPTOIR.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace COMPTOIR.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230216144420_lastupdate01")]
+    partial class lastupdate01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -658,11 +660,11 @@ namespace COMPTOIR.Migrations
                     b.Property<string>("IssuedBy")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("LastUpdateBy")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime?>("LastUpdateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -696,7 +698,7 @@ namespace COMPTOIR.Migrations
 
                     b.HasIndex("IssuedBy");
 
-                    b.HasIndex("LastUpdateBy");
+                    b.HasIndex("LastUpdatedBy");
 
                     b.HasIndex("ServedBy");
 
@@ -1330,9 +1332,9 @@ namespace COMPTOIR.Migrations
                         .WithMany()
                         .HasForeignKey("IssuedBy");
 
-                    b.HasOne("COMPTOIR.Models.Identity.ApplicationUser", "LastUpdateUser")
+                    b.HasOne("COMPTOIR.Models.Identity.ApplicationUser", "LastUpdatedUser")
                         .WithMany()
-                        .HasForeignKey("LastUpdateBy");
+                        .HasForeignKey("LastUpdatedBy");
 
                     b.HasOne("COMPTOIR.Models.Identity.ApplicationUser", "ServedUser")
                         .WithMany()
@@ -1350,7 +1352,7 @@ namespace COMPTOIR.Migrations
 
                     b.Navigation("IssuedUser");
 
-                    b.Navigation("LastUpdateUser");
+                    b.Navigation("LastUpdatedUser");
 
                     b.Navigation("ServedUser");
                 });

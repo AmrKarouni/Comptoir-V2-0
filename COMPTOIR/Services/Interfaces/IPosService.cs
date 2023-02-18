@@ -13,5 +13,6 @@ namespace COMPTOIR.Services.Interfaces
         ResultWithMessage GetTicketById(int id);
         ResultWithMessage GetTodayPendingTickets();
         ResultWithMessage GetTodayPendingTicketsByChannelId(int channelId);
+        ResultWithMessage GetPosTicketsByFilter(FilterModel model);
     }
 }

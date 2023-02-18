@@ -74,13 +74,12 @@ namespace COMPTOIR.Services
 
             ticket.TicketRecipes = model.Recipes.Select(x => new TicketRecipe(x)).ToList();
             ticket.Taxes = _db.Channels?.Include(x => x.Category)?
-                                    .ThenInclude(x => x.Taxes)?
-                                    .FirstOrDefault(x => x.Id == ticket.ChannelId).Category.Taxes?.ToList();
+                                        .ThenInclude(x => x.Taxes)?
+                                        .FirstOrDefault(x => x.Id == ticket.ChannelId).Category.Taxes?.ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.TicketNumber = GenerateTicketNumber();
 
             await _db.Tickets.AddAsync(ticket);
-
             _db.SaveChanges();
             var q = _db.Tickets.Include(x => x.TicketRecipes)
                                 .ThenInclude(x => x.Recipe)
@@ -120,6 +119,8 @@ namespace COMPTOIR.Services
                                     .ThenInclude(x => x.Taxes)?
                                     .FirstOrDefault(x => x.Id == model.ChannelId).Category.Taxes?.ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
+            ticket.LastUpdateDate = DateTime.UtcNow;
+            //ticket.LastUpdateBy = 
             _db.Entry(ticket).State = EntityState.Modified;
             _db.SaveChanges();
             var q = _db.Tickets.Include(x => x.TicketRecipes)
@@ -138,10 +139,9 @@ namespace COMPTOIR.Services
             ticket.TicketRecipes.Where(x => x.IsFree == false)
                                 .Select(x => amount = amount + (x.UnitPrice * x.Count))
                                 .ToList();
-            if (ticket.DiscountId != null)
+            if (ticket.Discount != null)
             {
-                var discount = _db.Discounts.FirstOrDefault(x => x.Id == ticket.DiscountId);
-                amount = amount - (amount * discount.Value);
+                amount = (double)(amount - (amount * ticket.Discount));
             }
             if (ticket.Taxes != null)
             {
@@ -259,7 +259,8 @@ namespace COMPTOIR.Services
                                 && x.IsDelivered == false
                                 && x.IsCancelled == false
                                 && x.IsConfirmed == true
-                                && x.IsDone == true);
+                                && x.IsDone == true)
+                               .OrderBy(x => x.OrderDate);
             if (tickets == null)
             {
                 return new ResultWithMessage { Success = false, Message = "No Ticket Found !!!" };
@@ -280,7 +281,8 @@ namespace COMPTOIR.Services
                                 && x.IsDelivered == false
                                 && x.IsCancelled == false
                                 && x.IsConfirmed == true
-                                && x.IsDone == true);
+                                && x.IsDone == true)
+                               .OrderBy(x => x.OrderDate);
             if (tickets == null)
             {
                 return new ResultWithMessage { Success = false, Message = "No Ticket Found !!!" };
@@ -290,5 +292,140 @@ namespace COMPTOIR.Services
 
         }
 
+        public ResultWithMessage GetPosTicketsByFilter(FilterModel model)
+        {
+            var list = new List<TicketViewModel>();
+            var tickets = _db.Tickets.Include(x => x.Customer)
+                                     .Include(x => x.TicketRecipes)
+                                     .ThenInclude(y => y.Recipe)
+                                     .ToList();
+            if (model.IsVip != null)
+            {
+                tickets = tickets.Where(x => x.IsVip == model.IsVip).ToList();
+            }
+
+            if (model.IsPaid != null)
+            {
+                tickets = tickets.Where(x => x.IsPaid == model.IsPaid).ToList();
+            }
+
+            if (model.IsConfirmed != null)
+            {
+                tickets = tickets.Where(x => x.IsConfirmed == model.IsConfirmed).ToList();
+            }
+
+            if (model.IsCancelled != null)
+            {
+                tickets = tickets.Where(x => x.IsCancelled == model.IsCancelled).ToList();
+            }
+
+            if (model.IsDone != null)
+            {
+                tickets = tickets.Where(x => x.IsDone == model.IsDone).ToList();
+            }
+
+
+            if (model.IsDelivered != null)
+            {
+                tickets = tickets.Where(x => x.IsDelivered == model.IsDelivered).ToList();
+            }
+
+            if (model.HasDiscount != null)
+            {
+                tickets = tickets.Where(x => x.Discount > 0).ToList();
+            }
+
+            if (model.DateFrom.HasValue)
+            {
+                tickets = tickets?.Where(x => x.Date >= model.DateFrom).ToList();
+            }
+            if (model.DateTo.HasValue)
+            {
+                tickets = tickets?.Where(x => x.Date < model.DateTo.Value.AddDays(1)).ToList();
+            }
+
+            if (model.ConfirmationDateFrom.HasValue)
+            {
+                tickets = tickets?.Where(x => x.ConfirmationDate >= model.ConfirmationDateFrom).ToList();
+            }
+            if (model.ConfirmationDateTo.HasValue)
+            {
+                tickets = tickets?.Where(x => x.ConfirmationDate < model.ConfirmationDateTo.Value.AddDays(1)).ToList();
+            }
+
+            if (model.DoneDateFrom.HasValue)
+            {
+                tickets = tickets?.Where(x => x.DoneDate >= model.DoneDateFrom).ToList();
+            }
+            if (model.DoneDateTo.HasValue)
+            {
+                tickets = tickets?.Where(x => x.DoneDate < model.DoneDateTo.Value.AddDays(1)).ToList();
+            }
+
+            if (model.DeliveryDateFrom.HasValue)
+            {
+                tickets = tickets?.Where(x => x.DeliveryDate >= model.DeliveryDateFrom).ToList();
+            }
+            if (model.DeliveryDateTo.HasValue)
+            {
+                tickets = tickets?.Where(x => x.DeliveryDate < model.DeliveryDateTo.Value.AddDays(1)).ToList();
+            }
+
+            if (model.LastUpdateDateFrom.HasValue)
+            {
+                tickets = tickets?.Where(x => x.LastUpdateDate >= model.LastUpdateDateFrom).ToList();
+            }
+            if (model.LastUpdateDateTo.HasValue)
+            {
+                tickets = tickets?.Where(x => x.LastUpdateDate < model.LastUpdateDateTo.Value.AddDays(1)).ToList();
+            }
+
+            if (model.OrderDateFrom.HasValue)
+            {
+                tickets = tickets?.Where(x => x.OrderDate >= model.OrderDateFrom).ToList();
+            }
+            if (model.OrderDateTo.HasValue)
+            {
+                tickets = tickets?.Where(x => x.OrderDate < model.OrderDateTo.Value.AddDays(1)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(model.SearchQuery))
+            {
+                tickets = tickets?.Where(x => x.TicketRecipes.Any(y => y.Recipe.Name.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                        (x.Customer != null  && 
+                                              (!string.IsNullOrEmpty(x.Customer.Name) && x.Customer.Name.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.Addresses01) &&  x.Customer.Addresses01.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.Addresses02) && x.Customer.Addresses02.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.Addresses03) && x.Customer.Addresses03.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.Addresses04) && x.Customer.Addresses04.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.Addresses05) && x.Customer.Addresses05.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.ContactNumber01) && x.Customer.ContactNumber01.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.ContactNumber02) && x.Customer.ContactNumber02.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.ContactNumber03) && x.Customer.ContactNumber03.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.ContactNumber04) && x.Customer.ContactNumber04.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Customer.ContactNumber05) && x.Customer.ContactNumber05.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.CustomerAddress) && x.CustomerAddress.ToLower().Contains(model.SearchQuery.ToLower()))))
+                                  .ToList();
+            }
+
+
+            var dataSize = tickets.Count();
+            var sortProperty = typeof(TicketViewModel).GetProperty(model?.Sort ?? "Id");
+            if (model?.Order == "desc")
+            {
+                list = tickets?.Select(o => new TicketViewModel(o)).OrderByDescending(x => sortProperty.GetValue(x)).ToList();
+            }
+            else
+            {
+                list = tickets?.Select(o => new TicketViewModel(o)).OrderBy(x => sortProperty.GetValue(x)).ToList();
+            }
+
+            var result = list.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).ToList();
+            return new ResultWithMessage
+            {
+                Success = true,
+                Result = new ObservableData(result, dataSize)
+            };
+        }
     }
 }
