@@ -15,7 +15,7 @@ using System.Text;
 var MochaConnectionString = "MochaConnection";
 var localConnectionString = "LocalConnection";
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString(localConnectionString);
+var connectionString = builder.Configuration.GetConnectionString(MochaConnectionString);
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
 
