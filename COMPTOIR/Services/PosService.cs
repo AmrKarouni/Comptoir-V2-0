@@ -515,7 +515,7 @@ namespace COMPTOIR.Services
                 list = customers?.OrderBy(x => sortProperty.GetValue(x)).ToList();
             }
 
-            var result = customers.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).ToList();
+            var result = list.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).ToList();
             return new ResultWithMessage
             {
                 Success = true,

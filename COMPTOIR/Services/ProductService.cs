@@ -33,6 +33,7 @@ namespace COMPTOIR.Services
 
         public ResultWithMessage GetProducts(FilterModel model)
         {
+            var list = new List<ProductViewModel>();
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             var products = _db.Products?.Include(x => x.SubCategory)
                                         .ThenInclude(y => y.Category)
@@ -55,14 +56,14 @@ namespace COMPTOIR.Services
             var sortProperty = typeof(ProductViewModel).GetProperty(model?.Sort ?? "Id");
             if (model?.Order == "asc")
             {
-                products?.Select(p => new ProductViewModel(p, hostpath)).OrderBy(x => sortProperty.GetValue(x)).ToList();
+                list = products?.Select(p => new ProductViewModel(p, hostpath)).OrderBy(x => sortProperty.GetValue(x)).ToList();
             }
             else
             {
-                products?.Select(p => new ProductViewModel(p, hostpath))?.OrderByDescending(x => sortProperty.GetValue(x)).ToList();
+                list = products?.Select(p => new ProductViewModel(p, hostpath))?.OrderByDescending(x => sortProperty.GetValue(x)).ToList();
             }
 
-            var result = products.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).Select(p => new ProductViewModel(p, hostpath)).ToList();
+            var result = list.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).Select(p => new ProductViewModel(p, hostpath)).ToList();
             return new ResultWithMessage
             {
                 Success = true,
