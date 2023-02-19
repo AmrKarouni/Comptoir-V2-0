@@ -85,7 +85,7 @@ namespace COMPTOIR.Models.AppModels
         public bool IsPaid { get; set; } = false;
         public double? TotalAmount { get; set; } = 0;
         public double? TotalPaidAmount { get; set; } = 0;
-        public virtual ICollection<TicketTaxes>? Taxes { get; set; }
+        public virtual ICollection<TicketTax>? Taxes { get; set; }
         public virtual ICollection<TicketRecipe>? TicketRecipes { get; set; }
         public virtual ICollection<Transaction>? Transactions { get; set; }
     }
@@ -122,8 +122,20 @@ namespace COMPTOIR.Models.AppModels
         public double UnitPrice { get; set; } = 0;
     }
 
-    public class TicketTaxes
+    public class TicketTax
     {
+        public TicketTax()
+        {
+
+        }
+
+        public TicketTax(TicketTaxBindingModel model)
+        {
+            Name = model.Name;
+            Type = model.Type;
+            Rate = model.Rate;
+            TaxId = model.TaxId;
+        }
         public int Id { get; set; }
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]

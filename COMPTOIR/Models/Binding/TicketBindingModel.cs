@@ -20,6 +20,7 @@ namespace COMPTOIR.Models.Binding
             Discount = ticket.Discount;
             TicketNumber = ticket.TicketNumber; 
             Recipes = ticket.TicketRecipes.Select(x => new TicketRecipeBindingModel(x)).ToList();
+            Taxes = ticket.Taxes.Select(x => new TicketTaxBindingModel(x)).ToList();
         }
         public int Id { get; set; }
         public int? ChannelId { get; set; }
@@ -32,6 +33,7 @@ namespace COMPTOIR.Models.Binding
         public double? Discount { get; set; }
         public string? TicketNumber { get; set; }
         public List<TicketRecipeBindingModel>? Recipes { get; set; }
+        public List<TicketTaxBindingModel>? Taxes { get; set; }
     }
 
     public class TicketRecipeBindingModel
@@ -57,5 +59,28 @@ namespace COMPTOIR.Models.Binding
         public string? Note { get; set; }
         public bool? IsFree { get; set; } = false;
         public double UnitPrice { get; set; } = 0;
+    }
+
+    public class TicketTaxBindingModel
+    {
+        public TicketTaxBindingModel()
+        {
+
+        }
+        public TicketTaxBindingModel(TicketTax model)
+        {
+            Id = model.Id;
+            Name = model.Name;
+            Type = model.Type;
+            Rate = model.Rate;
+            TaxId = model.TaxId;
+        }
+
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Type { get; set; }
+        public double Rate { get; set; }
+        public int? TaxId { get; set; }
+
     }
 }

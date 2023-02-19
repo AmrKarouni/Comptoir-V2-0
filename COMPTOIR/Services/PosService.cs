@@ -60,6 +60,21 @@ namespace COMPTOIR.Services
             return new ResultWithMessage { Success = true, Result = cat };
         }
 
+
+        public ResultWithMessage GetTaxesByChannelId(int id)
+        {
+            if (id == 0)
+            {
+                id = int.Parse(_configuration.GetValue<string>("DefaultChannel"));
+            }
+            var taxes = _db.Channels?.Include(x => x.Category)?
+                                     .ThenInclude(x => x.Taxes)?
+                                     .FirstOrDefault(x => x.Id == id).Category.Taxes?.ToList();
+
+
+            return new ResultWithMessage { Success = true, Result = taxes };
+
+        }
         public async Task<ResultWithMessage> PostPosTicket(TicketBindingModel model)
         {
             if (model.ChannelId == null)
@@ -73,9 +88,7 @@ namespace COMPTOIR.Services
             var ticket = new Ticket(model);
 
             ticket.TicketRecipes = model.Recipes.Select(x => new TicketRecipe(x)).ToList();
-            //ticket.Taxes = _db.Channels?.Include(x => x.Category)?
-            //                            .ThenInclude(x => x.Taxes)?
-            //                            .FirstOrDefault(x => x.Id == ticket.ChannelId).Category.Taxes?.ToList();
+            ticket.Taxes = model.Taxes.Select(x => new TicketTax(x)).ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.TicketNumber = GenerateTicketNumber();
             ticket.LastUpdateDate = DateTime.UtcNow;
@@ -116,9 +129,7 @@ namespace COMPTOIR.Services
             ticket.TicketRecipes.Clear();
             ticket.Taxes.Clear();
             ticket.TicketRecipes = model.Recipes.Select(x => new TicketRecipe(x)).ToList();
-            //ticket.Taxes = _db.Channels?.Include(x => x.Category)?
-            //                        .ThenInclude(x => x.Taxes)?
-            //                        .FirstOrDefault(x => x.Id == model.ChannelId).Category.Taxes?.ToList();
+            ticket.Taxes = model.Taxes.Select(x => new TicketTax(x)).ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.LastUpdateDate = DateTime.UtcNow;
             ticket.IsPaid = false;
@@ -269,6 +280,7 @@ namespace COMPTOIR.Services
                                 .ThenInclude(x => x.Recipe)
                                 .ThenInclude(x => x.Product)
                                 .Include(x => x.Customer)
+                                .Include(x => x.Taxes)
                                 .FirstOrDefault(x => x.Id == id);
             if (ticket == null)
             {

@@ -25,6 +25,19 @@ namespace COMPTOIR.Controllers
             }
             return Ok(service.Result);
         }
+
+        [HttpGet("Taxes/{id}")]
+        public IActionResult GetTaxesByChannelId(int id)
+        {
+            var service = _posService.GetTaxesByChannelId(id);
+            if (!service.Success)
+            {
+                return BadRequest(new { message = service.Message });
+            }
+            return Ok(service.Result);
+        }
+
+
         [HttpPost("Tickets")]
         public async Task<IActionResult> PostPosTicket(TicketBindingModel model)
         {

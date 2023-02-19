@@ -7,6 +7,7 @@ namespace COMPTOIR.Services.Interfaces
     public interface IPosService
     {
         ResultWithMessage GetAllPosRecipes();
+        ResultWithMessage GetTaxesByChannelId(int id);
         Task<ResultWithMessage> PostPosTicket(TicketBindingModel model);
         Task<ResultWithMessage> PutPosTicket(int id,TicketBindingModel model);
         Task<ResultWithMessage> DeliverPosTicket(TicketDeliverBindingModel model);

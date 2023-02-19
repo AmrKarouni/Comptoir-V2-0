@@ -31,6 +31,7 @@ namespace COMPTOIR.Contexts
         public DbSet<TransactionCategory>? TransactionCategories { get; set; }
         public DbSet<Transaction>? Transactions { get; set; }
         public DbSet<TransactionProduct>? TransactionProducts { get; set; }
+        public DbSet<TicketTax>? TicketTaxes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Write Fluent API configurations here
