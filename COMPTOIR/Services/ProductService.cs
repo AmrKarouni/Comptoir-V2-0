@@ -66,7 +66,6 @@ namespace COMPTOIR.Services
             return new ResultWithMessage
             {
                 Success = true,
-                Message = "",
                 Result = new ObservableData(result, dataSize)
             };
         }

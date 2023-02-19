@@ -43,4 +43,42 @@ namespace COMPTOIR.Models.AppModels
         public virtual ICollection<ChannelCategory>? ChannelCategories { get; set; }
         public bool IsDeleted { get; set; }
     }
+
+    public class PlaceViewModel
+    {
+        public PlaceViewModel()
+        {
+
+        }
+
+        public PlaceViewModel(Place model,string hostpath)
+        {
+            Id = model.Id;
+            Name = model.Name;
+            Address = model.Address;
+            PhoneNumber = model.PhoneNumber;
+            IpAddress = model.IpAddress;
+            LogoUrl = !string.IsNullOrEmpty(model.LogoUrl) ? hostpath + model.LogoUrl : "";
+            CategoryId = model.CategoryId;
+            CategoryName = model.Category?.Name;
+            IsCook = model.Category.IsCook;
+            IsAmountIgnored = model.Category.IsAmountIgnored;
+            IsSend = model.Category.IsSend;
+            IsReceive = model.Category.IsReceive;
+
+    }
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Address { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? IpAddress { get; set; }
+        public string? LogoUrl { get; set; }
+
+        public int CategoryId { get; set; }
+        public string? CategoryName { get; set; }
+        public bool IsCook { get; set; }
+        public bool IsAmountIgnored { get; set; }
+        public bool IsSend { get; set; }
+        public bool IsReceive { get; set; }
+    }
 }

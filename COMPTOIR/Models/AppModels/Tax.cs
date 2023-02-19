@@ -13,7 +13,7 @@ namespace COMPTOIR.Models.AppModels
         public string? Type { get; set; }
         public double Rate { get; set; }
         public virtual ICollection<ChannelCategory>? ChannelCategories { get; set; }
-        public virtual ICollection<Ticket>? Tickets { get; set; }
-        public bool IsDeleted { get; set; }
+        public virtual ICollection<TicketTaxes>? Tickets { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

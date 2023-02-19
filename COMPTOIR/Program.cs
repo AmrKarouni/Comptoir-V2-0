@@ -35,6 +35,7 @@ builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IPosService, PosService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddTransient<ApplicationDbContextSeed>();
 builder.Services.AddDbContext<ApplicationDbContext>(x =>
 {
@@ -102,7 +103,8 @@ async Task SeedData(IHost app)
         var service = scope?.ServiceProvider.GetService<ApplicationDbContextSeed>();
         var userManager = scope?.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scope?.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        await service.SeedEssentialsAsync(userManager, roleManager);
+        var placeService = scope?.ServiceProvider.GetRequiredService<IPlaceService>();
+        await service.SeedEssentialsAsync(userManager, roleManager,placeService);
     }
 }
 // Configure the HTTP request pipeline.

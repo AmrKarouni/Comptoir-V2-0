@@ -28,6 +28,7 @@ namespace COMPTOIR.Models.AppModels
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public DateTime? ConfirmationDate { get; set; } = DateTime.UtcNow;
         public DateTime? DoneDate { get; set; } = DateTime.UtcNow;
+        public DateTime? CancelDate { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public DateTime? LastUpdateDate { get; set; }
         public DateTime? OrderDate { get; set; } = DateTime.UtcNow;
@@ -61,6 +62,10 @@ namespace COMPTOIR.Models.AppModels
         public string? DeliveredBy { get; set; }
         public virtual ApplicationUser? DeliveredUser { get; set; }
 
+        [ForeignKey("CanceledUser")]
+        public string? CanceledBy { get; set; }
+        public virtual ApplicationUser? CanceledUser { get; set; }
+
         [ForeignKey("LastUpdateUser")]
         public string? LastUpdateBy { get; set; }
         public virtual ApplicationUser? LastUpdateUser { get; set; }
@@ -70,7 +75,7 @@ namespace COMPTOIR.Models.AppModels
         //public Captain? Captain { get; set; }
   
         public bool? IsConfirmed { get; set; } = true;
-        public bool? IsCancelled { get; set; } = false;
+        public bool? IsCanceled { get; set; } = false;
         public bool? IsDone { get; set; } = true;
         public bool? IsDelivered { get; set; } = false;
         public bool? IsVip { get; set; } = false;
@@ -80,7 +85,7 @@ namespace COMPTOIR.Models.AppModels
         public bool IsPaid { get; set; } = false;
         public double? TotalAmount { get; set; } = 0;
         public double? TotalPaidAmount { get; set; } = 0;
-        public virtual ICollection<Tax>? Taxes { get; set; }
+        public virtual ICollection<TicketTaxes>? Taxes { get; set; }
         public virtual ICollection<TicketRecipe>? TicketRecipes { get; set; }
         public virtual ICollection<Transaction>? Transactions { get; set; }
     }
@@ -116,4 +121,25 @@ namespace COMPTOIR.Models.AppModels
         public bool? IsFree { get; set; } = false;
         public double UnitPrice { get; set; } = 0;
     }
+
+    public class TicketTaxes
+    {
+        public int Id { get; set; }
+        [Required]
+        [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]
+        [Display(Name = "Tax Name")]
+        public string? Name { get; set; }
+        [Required]
+        public string? Type { get; set; }
+        public double Rate { get; set; }
+        public bool IsDeleted { get; set; } = false;
+        [ForeignKey("Ticket")]
+        public int? TicketId { get; set; }
+        public virtual Ticket? Ticket { get; set; }
+
+        [ForeignKey("Tax")]
+        public int? TaxId { get; set; }
+        public virtual Tax? Tax { get; set; }
+    }
+    
 }

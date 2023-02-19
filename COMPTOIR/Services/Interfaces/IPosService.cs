@@ -10,6 +10,7 @@ namespace COMPTOIR.Services.Interfaces
         Task<ResultWithMessage> PostPosTicket(TicketBindingModel model);
         Task<ResultWithMessage> PutPosTicket(int id,TicketBindingModel model);
         Task<ResultWithMessage> DeliverPosTicket(TicketDeliverBindingModel model);
+        ResultWithMessage CancelTicket(int id);
         ResultWithMessage GetTicketById(int id);
         ResultWithMessage GetTodayPendingTickets();
         ResultWithMessage GetTodayPendingTicketsByChannelId(int channelId);

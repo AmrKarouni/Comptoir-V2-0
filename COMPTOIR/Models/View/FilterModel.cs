@@ -28,7 +28,7 @@
         ///
         public bool? IsPaid { get; set; }
         public bool? IsConfirmed { get; set; }
-        public bool? IsCancelled { get; set; }
+        public bool? IsCanceled { get; set; }
         public bool? IsDone { get; set; }
         public bool? IsDelivered { get; set; }
         public bool? IsVip { get; set; }

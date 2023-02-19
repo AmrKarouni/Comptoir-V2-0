@@ -13,6 +13,7 @@ namespace COMPTOIR.Models.View
             Id = model.Id;
             TicketNumber = model.TicketNumber;
             CreatedDate = model.Date;
+            LastUpdateDate = model.LastUpdateDate;
             CustomerName = model.Customer?.Name;
             ItemsCount = model.TicketRecipes?.Sum(x => x.Count);
             TotalAmount = model.TotalAmount;
@@ -22,7 +23,8 @@ namespace COMPTOIR.Models.View
         }
         public int Id { get; set; }
         public string TicketNumber { get; set; }
-        public DateTime CreatedDate { get; set; } 
+        public DateTime? CreatedDate { get; set; } 
+        public DateTime? LastUpdateDate { get; set; }
         public string? CustomerName { get; set; }
         public double? TotalAmount { get; set; } = 0;
         public double? TotalPaidAmount { get; set; } = 0;

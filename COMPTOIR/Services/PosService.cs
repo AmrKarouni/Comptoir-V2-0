@@ -73,12 +73,12 @@ namespace COMPTOIR.Services
             var ticket = new Ticket(model);
 
             ticket.TicketRecipes = model.Recipes.Select(x => new TicketRecipe(x)).ToList();
-            ticket.Taxes = _db.Channels?.Include(x => x.Category)?
-                                        .ThenInclude(x => x.Taxes)?
-                                        .FirstOrDefault(x => x.Id == ticket.ChannelId).Category.Taxes?.ToList();
+            //ticket.Taxes = _db.Channels?.Include(x => x.Category)?
+            //                            .ThenInclude(x => x.Taxes)?
+            //                            .FirstOrDefault(x => x.Id == ticket.ChannelId).Category.Taxes?.ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.TicketNumber = GenerateTicketNumber();
-
+            ticket.LastUpdateDate = DateTime.UtcNow;
             await _db.Tickets.AddAsync(ticket);
             _db.SaveChanges();
             var q = _db.Tickets.Include(x => x.TicketRecipes)
@@ -98,6 +98,7 @@ namespace COMPTOIR.Services
             }
             var ticket = _db.Tickets.Include(x => x.TicketRecipes)
                                     .Include(x => x.Taxes)
+                                    .Include(x => x.Transactions)
                                     .FirstOrDefault(x => x.Id == model.Id);
             if (ticket == null)
             {
@@ -115,11 +116,16 @@ namespace COMPTOIR.Services
             ticket.TicketRecipes.Clear();
             ticket.Taxes.Clear();
             ticket.TicketRecipes = model.Recipes.Select(x => new TicketRecipe(x)).ToList();
-            ticket.Taxes = _db.Channels?.Include(x => x.Category)?
-                                    .ThenInclude(x => x.Taxes)?
-                                    .FirstOrDefault(x => x.Id == model.ChannelId).Category.Taxes?.ToList();
+            //ticket.Taxes = _db.Channels?.Include(x => x.Category)?
+            //                        .ThenInclude(x => x.Taxes)?
+            //                        .FirstOrDefault(x => x.Id == model.ChannelId).Category.Taxes?.ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.LastUpdateDate = DateTime.UtcNow;
+            ticket.IsPaid = false;
+            ticket.IsDelivered = false;
+            ticket.DeliveryDate = null;
+            ticket.TotalPaidAmount = 0;
+            ticket.Transactions?.Clear();
             //ticket.LastUpdateBy = 
             _db.Entry(ticket).State = EntityState.Modified;
             _db.SaveChanges();
@@ -168,7 +174,7 @@ namespace COMPTOIR.Services
                                     .FirstOrDefault(x => x.Id == model.TicketId
                                                     && x.IsConfirmed == true
                                                     && x.IsDone == true
-                                                    && x.IsCancelled == false
+                                                    && x.IsCanceled == false
                                                     && x.IsDelivered == false);
             if (ticket == null)
             {
@@ -231,6 +237,32 @@ namespace COMPTOIR.Services
             return new ResultWithMessage { Success = true, Result = resTicket };
         }
 
+        public ResultWithMessage CancelTicket(int id)
+        {
+            var ticket = _db.Tickets.Include(x => x.Transactions)
+                                    .FirstOrDefault(x => x.Id == id);
+            if (ticket == null)
+            {
+                return new ResultWithMessage { Success = false, Message = "Ticket Not Found !!!" };
+            }
+            ticket.IsCanceled = true;
+            ticket.IsConfirmed = false;
+            ticket.IsDone = false;
+            ticket.IsPaid = false;
+            ticket.IsDelivered = false;
+            ticket.CancelDate = DateTime.UtcNow;
+            ticket.ConfirmationDate = null;
+            ticket.DoneDate = null;
+            ticket.DeliveryDate = null;
+            ticket.LastUpdateDate = DateTime.UtcNow;
+            ticket.DeliveryDate = null;
+            ticket.TotalPaidAmount = 0;
+            ticket.Transactions?.Clear();
+            _db.Entry(ticket).State = EntityState.Modified;
+            _db.SaveChanges();
+            return new ResultWithMessage { Success = true };
+        }
+
         public ResultWithMessage GetTicketById(int id)
         {
             var ticket = _db.Tickets.Include(x => x.TicketRecipes)
@@ -257,7 +289,7 @@ namespace COMPTOIR.Services
                                 && x.CurrentDay == date
                                 && x.IsPaid == false
                                 && x.IsDelivered == false
-                                && x.IsCancelled == false
+                                && x.IsCanceled == false
                                 && x.IsConfirmed == true
                                 && x.IsDone == true)
                                .OrderBy(x => x.OrderDate);
@@ -279,7 +311,7 @@ namespace COMPTOIR.Services
                                 && x.CurrentDay == date
                                 && x.IsPaid == false
                                 && x.IsDelivered == false
-                                && x.IsCancelled == false
+                                && x.IsCanceled == false
                                 && x.IsConfirmed == true
                                 && x.IsDone == true)
                                .OrderBy(x => x.OrderDate);
@@ -314,9 +346,9 @@ namespace COMPTOIR.Services
                 tickets = tickets.Where(x => x.IsConfirmed == model.IsConfirmed).ToList();
             }
 
-            if (model.IsCancelled != null)
+            if (model.IsCanceled != null)
             {
-                tickets = tickets.Where(x => x.IsCancelled == model.IsCancelled).ToList();
+                tickets = tickets.Where(x => x.IsCanceled == model.IsCanceled).ToList();
             }
 
             if (model.IsDone != null)

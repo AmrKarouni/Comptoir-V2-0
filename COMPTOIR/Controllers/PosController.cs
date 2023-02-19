@@ -70,6 +70,17 @@ namespace COMPTOIR.Controllers
             return Ok(service.Result);
         }
 
+        [HttpDelete("Tickets/Cancel/{id}")]
+        public IActionResult CancelTicket(int id)
+        {
+            var service =  _posService.CancelTicket(id);
+            if (!service.Success)
+            {
+                return BadRequest(new { message = service.Message });
+            }
+            return Ok(service.Success);
+        }
+
         [HttpGet("Tickets/Pending")]
         public IActionResult GetTodayPendingTickets()
         {
