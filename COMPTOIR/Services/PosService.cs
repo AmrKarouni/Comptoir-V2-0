@@ -130,6 +130,12 @@ namespace COMPTOIR.Services
             ticket.Taxes?.Clear();
             ticket.TicketRecipes = model.Recipes?.Select(x => new TicketRecipe(x)).ToList();
             ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
+            ticket.Discount = model.Discount;
+            ticket.ChannelId = model.ChannelId;
+            ticket.CustomerId = model.CustomerId;
+            ticket.CustomerAddress = model.CustomerAddress;
+            ticket.IsVip = model.IsVip;
+            ticket.Note = model.Note;
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.LastUpdateDate = DateTime.UtcNow;
             ticket.IsPaid = false;
