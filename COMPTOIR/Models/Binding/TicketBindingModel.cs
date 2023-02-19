@@ -15,12 +15,13 @@ namespace COMPTOIR.Models.Binding
             CustomerAddress = ticket.CustomerAddress;
             CustomerName = ticket.Customer?.Name;
             CreatedDate = ticket.Date;
+            LastUpdateDate = ticket.LastUpdateDate;
             IsVip = ticket.IsVip;
             Note = ticket.Note;
             Discount = ticket.Discount;
             TicketNumber = ticket.TicketNumber; 
-            Recipes = ticket.TicketRecipes.Select(x => new TicketRecipeBindingModel(x)).ToList();
-            Taxes = ticket.Taxes.Select(x => new TicketTaxBindingModel(x)).ToList();
+            Recipes = ticket.TicketRecipes?.Select(x => new TicketRecipeBindingModel(x)).ToList();
+            Taxes = ticket.Taxes?.Select(x => new TicketTaxBindingModel(x)).ToList();
         }
         public int Id { get; set; }
         public int? ChannelId { get; set; }
@@ -28,6 +29,7 @@ namespace COMPTOIR.Models.Binding
         public string? CustomerAddress { get; set; }
         public string? CustomerName { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public DateTime? LastUpdateDate { get; set; }
         public bool? IsVip { get; set; } = false;
         public string? Note { get; set; }
         public double? Discount { get; set; }

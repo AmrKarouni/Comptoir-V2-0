@@ -88,7 +88,7 @@ namespace COMPTOIR.Services
             var ticket = new Ticket(model);
 
             ticket.TicketRecipes = model.Recipes.Select(x => new TicketRecipe(x)).ToList();
-            ticket.Taxes = model.Taxes.Select(x => new TicketTax(x)).ToList();
+            ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.TicketNumber = GenerateTicketNumber();
             ticket.LastUpdateDate = DateTime.UtcNow;
@@ -126,10 +126,10 @@ namespace COMPTOIR.Services
                 model.CustomerId = int.Parse(_configuration.GetValue<string>("DefaultCustomer"));
             }
             
-            ticket.TicketRecipes.Clear();
-            ticket.Taxes.Clear();
-            ticket.TicketRecipes = model.Recipes.Select(x => new TicketRecipe(x)).ToList();
-            ticket.Taxes = model.Taxes.Select(x => new TicketTax(x)).ToList();
+            ticket.TicketRecipes?.Clear();
+            ticket.Taxes?.Clear();
+            ticket.TicketRecipes = model.Recipes?.Select(x => new TicketRecipe(x)).ToList();
+            ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.LastUpdateDate = DateTime.UtcNow;
             ticket.IsPaid = false;
