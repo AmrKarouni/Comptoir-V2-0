@@ -69,7 +69,7 @@ namespace COMPTOIR.Services
             }
             var taxes = _db.Channels?.Include(x => x.Category)?
                                      .ThenInclude(x => x.Taxes)?
-                                     .FirstOrDefault(x => x.Id == id).Category.Taxes?.ToList();
+                                     .FirstOrDefault(x => x.Id == id).Category.Taxes?.Where(x => x.IsDeleted == false).ToList();
 
 
             return new ResultWithMessage { Success = true, Result = taxes };
@@ -155,7 +155,6 @@ namespace COMPTOIR.Services
             return new ResultWithMessage { Success = true, Result = resTicket };
         }
 
-
         private double CalculateTicketAmount(Ticket ticket)
         {
             var amount = 0.0;
@@ -172,6 +171,7 @@ namespace COMPTOIR.Services
             }
             return amount;
         }
+        
         private string GenerateTicketNumber()
         {
             var date = DateTime.UtcNow.Date;
@@ -182,6 +182,7 @@ namespace COMPTOIR.Services
                       + (maxTicketNum + 1).ToString().PadLeft(5, '0');
             return resut;
         }
+        
         public async Task<ResultWithMessage> DeliverPosTicket(TicketDeliverBindingModel model)
         {
             var placeToId = int.Parse(_configuration.GetValue<string>("DefaultClientPlace"));
@@ -254,7 +255,6 @@ namespace COMPTOIR.Services
             var resTicket = new TicketBindingModel(q);
             return new ResultWithMessage { Success = true, Result = resTicket };
         }
-
         public ResultWithMessage CancelTicket(int id)
         {
             var ticket = _db.Tickets.Include(x => x.Transactions)
@@ -280,7 +280,6 @@ namespace COMPTOIR.Services
             _db.SaveChanges();
             return new ResultWithMessage { Success = true };
         }
-
         public ResultWithMessage GetTicketById(int id)
         {
             var ticket = _db.Tickets.Include(x => x.TicketRecipes)
@@ -297,7 +296,6 @@ namespace COMPTOIR.Services
             var resTicket = new TicketBindingModel(ticket);
             return new ResultWithMessage { Success = true, Result = resTicket };
         }
-
         public ResultWithMessage GetTodayPendingTickets()
         {
             var channel = int.Parse(_configuration.GetValue<string>("DefaultChannel"));
@@ -477,6 +475,47 @@ namespace COMPTOIR.Services
             }
 
             var result = list.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).ToList();
+            return new ResultWithMessage
+            {
+                Success = true,
+                Result = new ObservableData(result, dataSize)
+            };
+        }
+
+        public ResultWithMessage GetCustomersByFilter(FilterModel model)
+        {
+            var list = new List<Customer>();
+            var customers = _db.Customers.Where(x => x.IsDeleted == false).ToList();
+            if (!string.IsNullOrEmpty(model.SearchQuery))
+            {
+                customers = customers?.Where(x => 
+                                              (!string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses01) && x.Addresses01.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses02) && x.Addresses02.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses03) && x.Addresses03.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses04) && x.Addresses04.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses05) && x.Addresses05.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber01) && x.ContactNumber01.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber02) && x.ContactNumber02.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber03) && x.ContactNumber03.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber04) && x.ContactNumber04.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber05) && x.ContactNumber05.ToLower().Contains(model.SearchQuery.ToLower())))
+                                  .ToList();
+            }
+
+
+            var dataSize = customers.Count();
+            var sortProperty = typeof(Customer).GetProperty(model?.Sort ?? "Id");
+            if (model?.Order == "desc")
+            {
+                list = customers?.OrderByDescending(x => sortProperty.GetValue(x)).ToList();
+            }
+            else
+            {
+                list = customers?.OrderBy(x => sortProperty.GetValue(x)).ToList();
+            }
+
+            var result = customers.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).ToList();
             return new ResultWithMessage
             {
                 Success = true,

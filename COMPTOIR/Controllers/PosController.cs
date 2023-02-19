@@ -38,6 +38,17 @@ namespace COMPTOIR.Controllers
         }
 
 
+        [HttpPost("Customers")]
+        public IActionResult GetCustomersByFilter(FilterModel model)
+        {
+            var service = _posService.GetCustomersByFilter(model);
+            if (!service.Success)
+            {
+                return BadRequest(new { message = service.Message });
+            }
+            return Ok(service.Result);
+        }
+
         [HttpPost("Tickets")]
         public async Task<IActionResult> PostPosTicket(TicketBindingModel model)
         {

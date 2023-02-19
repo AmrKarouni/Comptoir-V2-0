@@ -20,6 +20,7 @@ namespace COMPTOIR.Models.View
             TotalPaidAmount = model.TotalPaidAmount;
             Discount = model.Discount;
             IsPaid = model.IsPaid;
+            IsCash = model.IsCash;
         }
         public int Id { get; set; }
         public string TicketNumber { get; set; }
@@ -31,5 +32,6 @@ namespace COMPTOIR.Models.View
         public double? Discount { get; set;}
         public double? ItemsCount { get; set; }
         public bool IsPaid { get; set; }
+        public bool? IsCash { get; set; }
     }
 }

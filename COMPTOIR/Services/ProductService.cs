@@ -37,29 +37,29 @@ namespace COMPTOIR.Services
             var products = _db.Products?.Include(x => x.SubCategory)
                                         .ThenInclude(y => y.Category)
                                         .Include(r => r.Recipes)
-                                        .Where(z => z.IsDeleted == false);
+                                        .Where(z => z.IsDeleted == false).ToList();
             if (!string.IsNullOrEmpty(model.SearchQuery))
             {
                 if (int.TryParse(model.SearchQuery, out int code))
                 {
-                    products = products.Where(x => x.Code == code);
+                    products = products.Where(x => x.Code == code).ToList();
                 }
                 else
                 {
                     products = products.Where(x => x.Name.ToLower().StartsWith(model.SearchQuery.ToLower()) ||
                                                    x.SubCategory.Name.ToLower().StartsWith(model.SearchQuery.ToLower()) ||
-                                                   x.SubCategory.Category.Name.ToLower().StartsWith(model.SearchQuery.ToLower()));
+                                                   x.SubCategory.Category.Name.ToLower().StartsWith(model.SearchQuery.ToLower())).ToList();
                 }
             }
             var dataSize = products.Count();
             var sortProperty = typeof(ProductViewModel).GetProperty(model?.Sort ?? "Id");
             if (model?.Order == "asc")
             {
-                products?.Select(p => new ProductViewModel(p, hostpath)).OrderBy(x => sortProperty.GetValue(x));
+                products?.Select(p => new ProductViewModel(p, hostpath)).OrderBy(x => sortProperty.GetValue(x)).ToList();
             }
             else
             {
-                products?.Select(p => new ProductViewModel(p, hostpath))?.OrderByDescending(x => sortProperty.GetValue(x));
+                products?.Select(p => new ProductViewModel(p, hostpath))?.OrderByDescending(x => sortProperty.GetValue(x)).ToList();
             }
 
             var result = products.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).Select(p => new ProductViewModel(p, hostpath)).ToList();
