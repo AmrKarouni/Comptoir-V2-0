@@ -85,6 +85,7 @@ namespace COMPTOIR.Models.AppModels
         public bool IsPaid { get; set; } = false;
         public double? TotalAmount { get; set; } = 0;
         public double? TotalPaidAmount { get; set; } = 0;
+        public bool IsCash { get; set; } = true;
         public virtual ICollection<TicketTax>? Taxes { get; set; }
         public virtual ICollection<TicketRecipe>? TicketRecipes { get; set; }
         public virtual ICollection<Transaction>? Transactions { get; set; }

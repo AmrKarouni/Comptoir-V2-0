@@ -243,6 +243,7 @@ namespace COMPTOIR.Services
             ticket.IsPaid = true;
             ticket.TotalPaidAmount = model.PaidAmount;
             ticket.Note = model.Note;
+            ticket.IsCash = model.IsCash == null ? model.IsCash == null : true;
             _db.Entry(ticket).State = EntityState.Modified;
             _db.SaveChanges();
             var q = _db.Tickets.Include(x => x.TicketRecipes)
