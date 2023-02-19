@@ -14,36 +14,41 @@ namespace COMPTOIR.Services
         }
         public ResultWithMessage GetCustomers(FilterModel model)
         {
-            var customers = _db.Customers?.Where(z => z.IsDeleted == false);
+            var list = new List<Customer>();
+            var customers = _db.Customers.Where(x => x.IsDeleted == false).ToList();
             if (!string.IsNullOrEmpty(model.SearchQuery))
             {
-                customers = customers?.Where(x => x.Name == model.SearchQuery ||
-                                               x.Addresses01 == model.SearchQuery ||
-                                               x.Addresses02 == model.SearchQuery ||
-                                               x.Addresses03 == model.SearchQuery ||
-                                               x.Addresses04 == model.SearchQuery ||
-                                               x.Addresses05 == model.SearchQuery);
+                customers = customers?.Where(x =>
+                                              (!string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses01) && x.Addresses01.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses02) && x.Addresses02.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses03) && x.Addresses03.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses04) && x.Addresses04.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Addresses05) && x.Addresses05.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber01) && x.ContactNumber01.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber02) && x.ContactNumber02.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber03) && x.ContactNumber03.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber04) && x.ContactNumber04.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.ContactNumber05) && x.ContactNumber05.ToLower().Contains(model.SearchQuery.ToLower())))
+                                  .ToList();
             }
+
+
             var dataSize = customers.Count();
-            var sortProperty = typeof(ProductViewModel).GetProperty(model?.Sort ?? "Id");
-            if (customers == null)
+            var sortProperty = typeof(Customer).GetProperty(model?.Sort ?? "Id");
+            if (model?.Order == "desc")
             {
-                return new ResultWithMessage();
-            }
-            if (model?.Order == "asc")
-            {
-                customers?.OrderBy(x => sortProperty.GetValue(x));
+                list = customers?.OrderByDescending(x => sortProperty.GetValue(x)).ToList();
             }
             else
             {
-                customers?.OrderByDescending(x => sortProperty.GetValue(x));
+                list = customers?.OrderBy(x => sortProperty.GetValue(x)).ToList();
             }
-            
-           var result = customers.Skip(model.PageSize * model.PageIndex).Take(model.PageSize);
+
+            var result = list.Skip(model.PageSize * model.PageIndex).Take(model.PageSize).ToList();
             return new ResultWithMessage
             {
                 Success = true,
-                Message = "",
                 Result = new ObservableData(result, dataSize)
             };
         }
