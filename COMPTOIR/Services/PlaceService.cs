@@ -18,8 +18,8 @@ namespace COMPTOIR.Services
 
         public async Task<ResultWithMessage> PostPlaceCategoryAsync(PlaceCategory model)
         {
-            var subcat = _db.PlaceCategories?.FirstOrDefault(x => x.Name == model.Name);
-            if (subcat != null)
+            var cat = _db.PlaceCategories?.FirstOrDefault(x => x.Name == model.Name);
+            if (cat != null)
             {
                 return new ResultWithMessage { Success = false, Message = $@"Place Category {model.Name} Already Exist !!!" };
             }

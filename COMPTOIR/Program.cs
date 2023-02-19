@@ -104,7 +104,15 @@ async Task SeedData(IHost app)
         var userManager = scope?.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scope?.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var placeService = scope?.ServiceProvider.GetRequiredService<IPlaceService>();
-        await service.SeedEssentialsAsync(userManager, roleManager,placeService);
+        var transactionService = scope?.ServiceProvider.GetRequiredService<ITransactionService>();
+        var channelService = scope?.ServiceProvider.GetRequiredService<IChannelService>();
+        var customerService = scope?.ServiceProvider.GetRequiredService<ICustomerService>();
+        await service.SeedEssentialsAsync(userManager,
+                                          roleManager,
+                                          placeService,
+                                          transactionService,
+                                          channelService,
+                                          customerService);
     }
 }
 // Configure the HTTP request pipeline.

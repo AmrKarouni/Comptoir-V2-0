@@ -10,7 +10,10 @@ namespace COMPTOIR.Contexts
     {
         public async Task SeedEssentialsAsync(UserManager<ApplicationUser> userManager,
                                               RoleManager<IdentityRole> roleManager,
-                                              IPlaceService placeService)
+                                              IPlaceService placeService,
+                                              ITransactionService transactionService,
+                                              IChannelService channelService,
+                                              ICustomerService customerService)
         {
             //Seed Roles
 
@@ -43,7 +46,6 @@ namespace COMPTOIR.Contexts
                 IsReceive = true,
                 IsDeleted = false
             });
-
             await placeService.PostPlaceCategoryAsync(new PlaceCategory
             {
                 Id = 0,
@@ -54,7 +56,6 @@ namespace COMPTOIR.Contexts
                 IsReceive = true,
                 IsDeleted = false
             });
-
             await placeService.PostPlaceCategoryAsync(new PlaceCategory
             {
                 Id = 0,
@@ -77,7 +78,6 @@ namespace COMPTOIR.Contexts
                 CategoryId = 1,
                 IsDeleted = false,
             });
-
             await placeService.PostPlaceAsync(new Place
             {
                 Id = 0,
@@ -89,7 +89,6 @@ namespace COMPTOIR.Contexts
                 CategoryId = 2,
                 IsDeleted = false,
             });
-
             await placeService.PostPlaceAsync(new Place
             {
                 Id = 0,
@@ -101,6 +100,83 @@ namespace COMPTOIR.Contexts
                 CategoryId = 3,
                 IsDeleted = false,
             });
+
+            //Seed Transaction Categories
+            await transactionService.PostTransactionCategoryAsync(new TransactionCategory
+            {
+                Name = "Production",
+                IsViceversa = false,
+                IsPayment = false,
+                InOut = null,
+                IsPos = false,
+                Description = null,
+                IsDeleted =false
+            });
+            await transactionService.PostTransactionCategoryAsync(new TransactionCategory
+            {
+                Name = "Sale",
+                IsViceversa = false,
+                IsPayment = false,
+                InOut = null,
+                IsPos = true,
+                Description = null,
+                IsDeleted = false
+            });
+            await transactionService.PostTransactionCategoryAsync(new TransactionCategory
+            {
+                Name = "Transfer",
+                IsViceversa = false,
+                IsPayment = false,
+                InOut = null,
+                IsPos = false,
+                Description = null,
+                IsDeleted = false
+            });
+
+            //Seed Channel & Channel Category
+            await channelService.PostChannelCategoryAsync(new ChannelCategory
+            {
+                Id = 0,
+                Name = "Pos Channel Category",
+                PlaceId =2,
+                IsMiniPos = false,
+                IsDeleted = false
+            });
+
+            await channelService.PostChannelAsync(new Channel
+            {
+                Id = 0,
+                Name = "Pos Channel",
+                CategoryId = 1,
+                PositionX = null,
+                PositionY = null,
+                Rotation = null,
+                Seats = null,
+                IsAnonymous = true,
+                IsMultiple = true,
+                IsDeleted = false
+            });
+
+            //Seed Customer 
+            await customerService.PostCustomerAsync(new Customer
+            {
+                Id = 0,
+                Name = "Guest",
+                ContactNumber01 = null,
+                ContactNumber02 = null,
+                ContactNumber03 = null,
+                ContactNumber04 = null,
+                ContactNumber05 = null,
+                Gender = null,
+                LoyalityLevel = null,
+                Addresses01 = null,
+                Addresses02 = null,
+                Addresses03 = null,
+                Addresses04 = null,
+                Addresses05 = null,
+                IsDeleted = false
+            });
+
         }
     }
 }

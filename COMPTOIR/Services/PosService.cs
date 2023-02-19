@@ -60,7 +60,6 @@ namespace COMPTOIR.Services
             return new ResultWithMessage { Success = true, Result = cat };
         }
 
-
         public ResultWithMessage GetTaxesByChannelId(int id)
         {
             if (id == 0)
@@ -347,6 +346,7 @@ namespace COMPTOIR.Services
             var tickets = _db.Tickets.Include(x => x.Customer)
                                      .Include(x => x.TicketRecipes)
                                      .ThenInclude(y => y.Recipe)
+                                     .Where(x => x.IsCanceled == false)
                                      .ToList();
             if (model.IsVip != null)
             {
