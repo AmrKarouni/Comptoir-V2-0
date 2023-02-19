@@ -251,7 +251,7 @@ namespace COMPTOIR.Services
                                 .ThenInclude(x => x.Product)
                                 .Include(x => x.Customer)
                                 .FirstOrDefault(x => x.Id == ticket.Id);
-            var resTicket = new TicketBindingModel(q);
+            var resTicket = new TicketViewModel(q);
             return new ResultWithMessage { Success = true, Result = resTicket };
         }
         public ResultWithMessage CancelTicket(int id)
