@@ -223,7 +223,7 @@ namespace COMPTOIR.Services
                     {
                         ProductId = p.ProductId,
                         Amount = p.ProductAmount.Value
-                    }).ToList()));
+                    }).ToList(),ticket.IsCash));
             }
 
             var poschannel = _db.Channels.Include(x => x.Category).FirstOrDefault(x => x.Id == ticket.ChannelId);
@@ -237,7 +237,7 @@ namespace COMPTOIR.Services
                                             .Select(x => new TransactionProduct { ProductId = x.ProductId, Amount = x.Amount })
                                             .ToList();
             ticket.Transactions.Add(new Transaction(
-                poschannel.Category.PlaceId.Value, placeToId, "Sale", products));
+                poschannel.Category.PlaceId.Value, placeToId, "Sale", products,ticket.IsCash));
             ticket.DeliveryDate = DateTime.UtcNow;
             ticket.IsDelivered = true;
             ticket.IsPaid = true;
@@ -379,6 +379,11 @@ namespace COMPTOIR.Services
             if (model.IsDelivered != null)
             {
                 tickets = tickets.Where(x => x.IsDelivered == model.IsDelivered).ToList();
+            }
+
+            if (model.IsCash != null)
+            {
+                tickets = tickets.Where(x => x.IsCash == model.IsCash).ToList();
             }
 
             if (model.HasDiscount != null)

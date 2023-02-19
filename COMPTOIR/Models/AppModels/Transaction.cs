@@ -24,13 +24,14 @@ namespace COMPTOIR.Models.AppModels
 
         }
 
-        public Transaction(int placeFromId,int placeToId,string categoryName, List<TransactionProduct> transactionProducts)
+        public Transaction(int placeFromId,int placeToId,string categoryName, List<TransactionProduct> transactionProducts,bool isCash)
         {
             CategoryName = categoryName;
             FromPlaceId = placeFromId;
             ToPlaceId = placeToId;
             Date = DateTime.UtcNow;
             TransactionProducts = transactionProducts;
+            IsCash = isCash;
         }
 
         public Transaction(Recipe recipe, double count)
@@ -68,9 +69,7 @@ namespace COMPTOIR.Models.AppModels
         public string? Note { get; set; }
         public string? BillImageUrl { get; set; }
         public double? PayReceiveAmount { get; set; } = 0;
-        [ForeignKey("Discount")]
-        public int? DiscountId { get; set; }
-        public virtual Discount? Discount { get; set; }
+        public double? Discount { get; set; }
         [ForeignKey("Customer")]
         public int? CustomerId { get; set; }
         public virtual Customer? Customer { get; set; }
@@ -103,6 +102,7 @@ namespace COMPTOIR.Models.AppModels
         public virtual ICollection<TransactionProduct>? TransactionProducts { get; set; }
         public bool? IsArchive { get; set; } = false;
         public bool? IsBank { get; set; } = false;
+        public bool IsCash { get; set; } = true;
     }
 
     public class TransactionProduct

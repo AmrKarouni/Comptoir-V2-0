@@ -4,6 +4,7 @@ using COMPTOIR.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace COMPTOIR.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230219132524_tickettaxes03")]
+    partial class tickettaxes03
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -831,8 +833,8 @@ namespace COMPTOIR.Migrations
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<double?>("Discount")
-                        .HasColumnType("float");
+                    b.Property<int?>("DiscountId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("FromPlaceId")
                         .HasColumnType("int");
@@ -844,9 +846,6 @@ namespace COMPTOIR.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsCancelled")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsCash")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("IsConfirmed")
@@ -894,6 +893,8 @@ namespace COMPTOIR.Migrations
                     b.HasIndex("ConfirmedBy");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("DiscountId");
 
                     b.HasIndex("FromPlaceId");
 
@@ -1444,6 +1445,10 @@ namespace COMPTOIR.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId");
 
+                    b.HasOne("COMPTOIR.Models.AppModels.Discount", "Discount")
+                        .WithMany()
+                        .HasForeignKey("DiscountId");
+
                     b.HasOne("COMPTOIR.Models.AppModels.Place", "FromPlace")
                         .WithMany()
                         .HasForeignKey("FromPlaceId");
@@ -1475,6 +1480,8 @@ namespace COMPTOIR.Migrations
                     b.Navigation("ConfirmedUser");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Discount");
 
                     b.Navigation("FromPlace");
 
