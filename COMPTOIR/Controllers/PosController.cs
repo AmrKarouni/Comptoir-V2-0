@@ -135,5 +135,16 @@ namespace COMPTOIR.Controllers
             }
             return Ok(service.Result);
         }
+
+        [HttpPost("Tickets/Actions")]
+        public async Task<IActionResult> PosTicketActions(TicketPayBindingModel model)
+        {
+            var service = await _posService.PosTicketActions(model);
+            if (!service.Success)
+            {
+                return BadRequest(new { message = service.Message });
+            }
+            return Ok(service.Result);
+        }
     }
 }

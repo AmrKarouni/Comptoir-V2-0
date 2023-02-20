@@ -24,7 +24,12 @@ namespace COMPTOIR.Models.AppModels
 
         }
 
-        public Transaction(int placeFromId,int placeToId,string categoryName, List<TransactionProduct> transactionProducts,bool isCash)
+        public Transaction(int placeFromId,
+                           int placeToId,
+                           string categoryName, 
+                           List<TransactionProduct> transactionProducts,
+                           bool isCash,
+                           double paidAmount)
         {
             CategoryName = categoryName;
             FromPlaceId = placeFromId;
@@ -32,6 +37,7 @@ namespace COMPTOIR.Models.AppModels
             Date = DateTime.UtcNow;
             TransactionProducts = transactionProducts;
             IsCash = isCash;
+            PayReceiveAmount = paidAmount;
         }
 
         public Transaction(Recipe recipe, double count)

@@ -17,5 +17,6 @@ namespace COMPTOIR.Services.Interfaces
         ResultWithMessage GetTodayPendingTicketsByChannelId(int channelId);
         ResultWithMessage GetPosTicketsByFilter(FilterModel model);
         ResultWithMessage GetCustomersByFilter(FilterModel model);
+        Task<ResultWithMessage> PosTicketActions(TicketPayBindingModel model);
     }
 }
