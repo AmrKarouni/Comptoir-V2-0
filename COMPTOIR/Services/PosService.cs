@@ -124,13 +124,12 @@ namespace COMPTOIR.Services
             {
                 model.CustomerId = int.Parse(_configuration.GetValue<string>("DefaultCustomer"));
             }
-            
-            //ticket.TicketRecipes?.Clear();
-            //ticket.Taxes?.Clear();
-            //ticket.Transactions?.Clear();
-            _db.TicketRecipes.RemoveRange(ticket.TicketRecipes);
-            _db.TicketTaxes.RemoveRange(ticket.Taxes);
-            _db.Transactions.RemoveRange(ticket.Transactions);
+
+            //_db.TicketRecipes?.RemoveRange(newticket.TicketRecipes);
+            //_db.TicketTaxes?.RemoveRange(newticket.Taxes);
+            ticket.TicketRecipes.Clear();
+            ticket.Taxes.Clear();
+            _db.Transactions?.RemoveRange(ticket.Transactions);
             ticket.TicketRecipes = model.Recipes?.Select(x => new TicketRecipe(x)).ToList();
             ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
             ticket.Discount = model.Discount;
@@ -232,7 +231,7 @@ namespace COMPTOIR.Services
                                                                                 ProductId = p.ProductId,
                                                                                 Amount = p.ProductAmount.Value
                                                                             }).ToList(),
-                                                        ticket.IsCash,
+                                                        false,
                                                         0));
             }
 
@@ -589,8 +588,10 @@ namespace COMPTOIR.Services
                     model.Ticket.CustomerId = int.Parse(_configuration.GetValue<string>("DefaultCustomer"));
                 }
 
-                _db.TicketRecipes?.RemoveRange(newticket.TicketRecipes);
-                _db.TicketTaxes?.RemoveRange(newticket.Taxes);
+                //_db.TicketRecipes?.RemoveRange(newticket.TicketRecipes);
+                //_db.TicketTaxes?.RemoveRange(newticket.Taxes);
+                newticket.TicketRecipes.Clear();
+                newticket.Taxes.Clear();
                 _db.Transactions?.RemoveRange(newticket.Transactions);
                 newticket.TicketRecipes = model.Ticket.Recipes?.Select(x => new TicketRecipe(x)).ToList();
                 newticket.Taxes = model.Ticket.Taxes?.Select(x => new TicketTax(x)).ToList();
@@ -642,7 +643,7 @@ namespace COMPTOIR.Services
                                                                                         ProductId = p.ProductId,
                                                                                         Amount = p.ProductAmount.Value
                                                                                     }).ToList(),
-                                                            (bool)model.IsCash,
+                                                            false,
                                                             0));
             }
 

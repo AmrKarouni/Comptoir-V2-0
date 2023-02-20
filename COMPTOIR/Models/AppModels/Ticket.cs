@@ -108,8 +108,8 @@ namespace COMPTOIR.Models.AppModels
         }
         public int Id { get; set; }
         [ForeignKey("Ticket")]
-        public int? TicketId { get; set; }
-        public virtual Ticket? Ticket { get; set; }
+        public int TicketId { get; set; }
+        public virtual Ticket Ticket { get; set; }
         [ForeignKey("Recipe")]
         public int? RecipeId { get; set; }
         public virtual Recipe? Recipe { get; set; }
@@ -147,8 +147,8 @@ namespace COMPTOIR.Models.AppModels
         public double Rate { get; set; }
         public bool IsDeleted { get; set; } = false;
         [ForeignKey("Ticket")]
-        public int? TicketId { get; set; }
-        public virtual Ticket? Ticket { get; set; }
+        public int TicketId { get; set; }
+        public virtual Ticket Ticket { get; set; }
 
         [ForeignKey("Tax")]
         public int? TaxId { get; set; }
