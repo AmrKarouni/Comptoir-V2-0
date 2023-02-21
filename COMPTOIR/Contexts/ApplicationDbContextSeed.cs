@@ -175,11 +175,11 @@ namespace COMPTOIR.Contexts
                 ContactNumber05 = null,
                 Gender = null,
                 LoyalityLevel = null,
-                Addresses01 = null,
-                Addresses02 = null,
-                Addresses03 = null,
-                Addresses04 = null,
-                Addresses05 = null,
+                Address01 = null,
+                Address02 = null,
+                Address03 = null,
+                Address04 = null,
+                Address05 = null,
                 IsDeleted = false
             });
 

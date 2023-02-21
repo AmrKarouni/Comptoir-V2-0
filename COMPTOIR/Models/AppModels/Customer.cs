@@ -21,11 +21,11 @@ namespace COMPTOIR.Models.AppModels
         public string? ContactNumber05 { get; set; }
         public string? Gender { get; set; }
         public int? LoyalityLevel { get; set; }
-        public string? Addresses01 { get; set; }
-        public string? Addresses02 { get; set; }
-        public string? Addresses03 { get; set; }
-        public string? Addresses04 { get; set; }
-        public string? Addresses05 { get; set; }
+        public string? Address01 { get; set; }
+        public string? Address02 { get; set; }
+        public string? Address03 { get; set; }
+        public string? Address04 { get; set; }
+        public string? Address05 { get; set; }
         public bool IsDeleted { get; set; } = false;
     }
 }

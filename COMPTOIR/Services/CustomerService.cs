@@ -20,11 +20,11 @@ namespace COMPTOIR.Services
             {
                 customers = customers?.Where(x =>
                                               (!string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(model.SearchQuery.ToLower())) ||
-                                              (!string.IsNullOrEmpty(x.Addresses01) && x.Addresses01.ToLower().Contains(model.SearchQuery.ToLower())) ||
-                                              (!string.IsNullOrEmpty(x.Addresses02) && x.Addresses02.ToLower().Contains(model.SearchQuery.ToLower())) ||
-                                              (!string.IsNullOrEmpty(x.Addresses03) && x.Addresses03.ToLower().Contains(model.SearchQuery.ToLower())) ||
-                                              (!string.IsNullOrEmpty(x.Addresses04) && x.Addresses04.ToLower().Contains(model.SearchQuery.ToLower())) ||
-                                              (!string.IsNullOrEmpty(x.Addresses05) && x.Addresses05.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Address01) && x.Address01.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Address02) && x.Address02.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Address03) && x.Address03.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Address04) && x.Address04.ToLower().Contains(model.SearchQuery.ToLower())) ||
+                                              (!string.IsNullOrEmpty(x.Address05) && x.Address05.ToLower().Contains(model.SearchQuery.ToLower())) ||
                                               (!string.IsNullOrEmpty(x.ContactNumber01) && x.ContactNumber01.ToLower().Contains(model.SearchQuery.ToLower())) ||
                                               (!string.IsNullOrEmpty(x.ContactNumber02) && x.ContactNumber02.ToLower().Contains(model.SearchQuery.ToLower())) ||
                                               (!string.IsNullOrEmpty(x.ContactNumber03) && x.ContactNumber03.ToLower().Contains(model.SearchQuery.ToLower())) ||
