@@ -27,5 +27,6 @@ namespace COMPTOIR.Models.AppModels
         public string? Address04 { get; set; }
         public string? Address05 { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public virtual ICollection<Ticket>? Tickets { get; set; }
     }
 }

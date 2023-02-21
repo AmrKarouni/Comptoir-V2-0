@@ -2,6 +2,7 @@
 using COMPTOIR.Models.AppModels;
 using COMPTOIR.Models.View;
 using COMPTOIR.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace COMPTOIR.Services
 {

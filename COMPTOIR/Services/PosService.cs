@@ -575,9 +575,14 @@ namespace COMPTOIR.Services
                                     .Include(x => x.Taxes)
                                     .Include(x => x.Transactions)
                                     .FirstOrDefault(x => x.Id == model.Ticket.Id);
+                
                 if (newticket == null)
                 {
                     return new ResultWithMessage { Success = false, Message = "Ticket Not Found !!!" };
+                }
+                if (newticket.IsPaid == true || newticket.IsDelivered == true)
+                {
+                    return new ResultWithMessage { Success = false, Message = @$"Ticket {newticket.TicketNumber} Is Already Paid !!!" };
                 }
                 if (model.Ticket.ChannelId == null)
                 {

@@ -20,8 +20,12 @@ namespace COMPTOIR.Models.Binding
             Note = ticket.Note;
             Discount = ticket.Discount;
             TicketNumber = ticket.TicketNumber; 
+            IsPaid = ticket.IsPaid;
+            IsPrinted = ticket.IsPrinted;
+            RefTicketId = ticket.RefTicketId;
             Recipes = ticket.TicketRecipes?.Select(x => new TicketRecipeBindingModel(x)).ToList();
             Taxes = ticket.Taxes?.Select(x => new TicketTaxBindingModel(x)).ToList();
+
         }
         public int Id { get; set; }
         public int? ChannelId { get; set; }
@@ -34,6 +38,9 @@ namespace COMPTOIR.Models.Binding
         public string? Note { get; set; }
         public double? Discount { get; set; }
         public string? TicketNumber { get; set; }
+        public bool IsPaid { get; set; }
+        public bool? IsPrinted { get; set; }
+        public int? RefTicketId { get; set; }
         public List<TicketRecipeBindingModel>? Recipes { get; set; }
         public List<TicketTaxBindingModel>? Taxes { get; set; }
     }
