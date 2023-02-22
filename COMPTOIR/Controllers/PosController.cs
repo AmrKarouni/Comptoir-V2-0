@@ -156,7 +156,7 @@ namespace COMPTOIR.Controllers
             {
                 return BadRequest(new { message = service.Message });
             }
-            return Ok(service.Success);
+            return Ok(service.Result);
         }
     }
 }

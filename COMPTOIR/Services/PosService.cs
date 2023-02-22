@@ -785,7 +785,13 @@ namespace COMPTOIR.Services
             _db.Entry(oldticket).State = EntityState.Modified;
             await _db.Tickets.AddAsync(newticket);
             _db.SaveChanges();
-            return new ResultWithMessage { Success = true };
+            var q = _db.Tickets.Include(x => x.TicketRecipes)
+                                .ThenInclude(x => x.Recipe)
+                                .ThenInclude(x => x.Product)
+                                .Include(x => x.Customer)
+                                .FirstOrDefault(x => x.Id == newticket.Id);
+            var resTicket = new TicketViewModel(q);
+            return new ResultWithMessage { Success = true, Result = resTicket };
         }
     }
 }
