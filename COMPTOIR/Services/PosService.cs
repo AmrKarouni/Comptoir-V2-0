@@ -565,7 +565,6 @@ namespace COMPTOIR.Services
                 newticket.TotalPaidAmount = model.PaidAmount;
                 newticket.Note = model.Note;
                 newticket.IsCash = model.IsCash == null ? model.IsCash == null : true;
-                
                 await _db.Tickets.AddAsync(newticket);
             }
 
@@ -678,6 +677,115 @@ namespace COMPTOIR.Services
             var resTicket = new TicketViewModel(q);
             return new ResultWithMessage { Success = true, Result = resTicket };
 
+        }
+
+        public async Task<ResultWithMessage> RefundTicketAsync (TicketPayBindingModel model)
+        {
+            var ticket = model.Ticket;
+            if (ticket.ChannelId == null)
+            {
+                ticket.ChannelId = int.Parse(_configuration.GetValue<string>("DefaultChannel"));
+            }
+            if (ticket.CustomerId == null)
+            {
+                ticket.CustomerId = int.Parse(_configuration.GetValue<string>("DefaultCustomer"));
+            }
+            var newticket = new Ticket(ticket);
+            newticket.TicketRecipes = ticket.Recipes.Select(x => new TicketRecipe(x)).ToList();
+
+            var oldticket = _db.Tickets.Include(x => x.TicketRecipes).FirstOrDefault(x => x.Id == newticket.RefTicketId);
+            if (oldticket == null)
+            {
+                return new ResultWithMessage { Success = false, Message = @$"Reference Ticket ID # {newticket.RefTicketId} Not Found !!!" };
+            }
+            
+            var q = newticket.TicketRecipes.Any(x =>
+                                            oldticket.TicketRecipes.FirstOrDefault(z => z.RecipeId == x.RecipeId).Count + x.Count < 0 );
+            //foreach (var tr in newticket.TicketRecipes.)
+            //{
+            //    if (oldticket.TicketRecipes.FirstOrDefault( x => x.RecipeId == tr.RecipeId).Count + tr.Count < 0)
+            //    {
+            //        return new ResultWithMessage { Success = false, Message = @$"Invalid Refund Amount {tr.Count} For Recipe {tr.Recipe.Name}" };
+            //    }
+            //}
+            if (!q)
+            {
+                return new ResultWithMessage { Success = false, Message = @$"Invalid Refund Amounts" };
+            }
+
+            oldticket.IsCanceled = true;
+            oldticket.CancelDate = DateTime.UtcNow;
+            oldticket.LastUpdateDate = DateTime.UtcNow;
+            oldticket.DeliveryDate = null;
+            
+            newticket.Taxes = ticket.Taxes?.Select(x => new TicketTax(x)).ToList();
+            newticket.TotalAmount = CalculateTicketAmount(newticket);
+            newticket.TicketNumber = GenerateTicketNumber();
+            newticket.LastUpdateDate = DateTime.UtcNow;
+            newticket.DeliveryDate = DateTime.UtcNow;
+            newticket.IsDelivered = true;
+            newticket.IsPaid = true;
+            newticket.TotalPaidAmount = model.PaidAmount;
+            newticket.Note = model.Note;
+            newticket.IsCash = model.IsCash == null ? model.IsCash == null : true;
+
+
+            var placeToId = int.Parse(_configuration.GetValue<string>("DefaultClientPlace"));
+            foreach (var ticketRecipe in newticket.TicketRecipes)
+            {
+                var recipe = _db.Recipes.Include(x => x.RecipeProducts).FirstOrDefault(x => x.Id == ticketRecipe.RecipeId);
+                if (recipe == null)
+                {
+                    return new ResultWithMessage { Success = false, Message = "Recipe Not Found !!!" };
+                }
+                ticketRecipe.Recipe = recipe;
+                newticket.Transactions.Add(new Transaction(recipe, ticketRecipe.Count));
+            }
+            newticket.Transactions = newticket.TicketRecipes.Select(x => new Transaction(x.Recipe, x.Count)).ToList();
+            var channel = _db.Channels.Include(x => x.Category).FirstOrDefault(x => x.Id == newticket.ChannelId);
+            if (channel == null)
+            {
+                return new ResultWithMessage { Success = false, Message = "Channel Not Found !!!" };
+            }
+            var fromPlaces = newticket.Transactions.Select(x => x.ToPlaceId).Distinct();
+            foreach (var placeId in fromPlaces.ToList())
+            {
+                newticket.Transactions.Add(new Transaction(
+                                                            placeId.Value,
+                                                            channel.Category.PlaceId.Value,
+                                                            "Transfer",
+                                                            newticket.Transactions.
+                                                                                    Where(x => x.ToPlaceId == placeId)
+                                                                                    .Select(p => new TransactionProduct
+                                                                                    {
+                                                                                        ProductId = p.ProductId,
+                                                                                        Amount = p.ProductAmount.Value
+                                                                                    }).ToList(),
+                                                            false,
+                                                            0));
+            }
+
+            var poschannel = _db.Channels.Include(x => x.Category).FirstOrDefault(x => x.Id == newticket.ChannelId);
+            if (poschannel == null)
+            {
+                return new ResultWithMessage { Success = false, Message = "Channel Not Found !!!" };
+            }
+            var products = newticket.Transactions.Where(x => x.ToPlaceId == poschannel.Category.PlaceId.Value
+                                                    && x.CategoryName == "Transfer")
+                                                        .SelectMany(x => x.TransactionProducts)
+                                                        .Select(x => new TransactionProduct { ProductId = x.ProductId, Amount = x.Amount })
+                                                        .ToList();
+            newticket.Transactions.Add(new Transaction(
+                                                        poschannel.Category.PlaceId.Value,
+                                                        placeToId,
+                                                        "Sale",
+                                                        products,
+                                                        (bool)model.IsCash,
+                                                        model.PaidAmount));
+            _db.Entry(oldticket).State = EntityState.Modified;
+            await _db.Tickets.AddAsync(newticket);
+            _db.SaveChanges();
+            return new ResultWithMessage { Success = true };
         }
     }
 }

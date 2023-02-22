@@ -18,5 +18,6 @@ namespace COMPTOIR.Services.Interfaces
         ResultWithMessage GetPosTicketsByFilter(FilterModel model);
         ResultWithMessage GetCustomersByFilter(FilterModel model);
         Task<ResultWithMessage> PosTicketActions(TicketPayBindingModel model);
+        Task<ResultWithMessage> RefundTicketAsync(TicketPayBindingModel model);
     }
 }

@@ -146,5 +146,17 @@ namespace COMPTOIR.Controllers
             }
             return Ok(service.Result);
         }
+
+
+        [HttpPost("Tickets/Refund")]
+        public async Task<IActionResult> RefundTicketAsync(TicketPayBindingModel model)
+        {
+            var service = await _posService.RefundTicketAsync(model);
+            if (!service.Success)
+            {
+                return BadRequest(new { message = service.Message });
+            }
+            return Ok(service.Success);
+        }
     }
 }
