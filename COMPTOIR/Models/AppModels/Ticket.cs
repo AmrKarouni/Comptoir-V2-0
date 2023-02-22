@@ -21,6 +21,7 @@ namespace COMPTOIR.Models.AppModels
             Note = model.Note;
             Discount = model.Discount;
             Transactions = new List<Transaction>();
+            RefTicketId = model.RefTicketId;
         }
 
         public int Id { get; set; }
