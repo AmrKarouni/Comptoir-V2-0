@@ -87,6 +87,12 @@ namespace COMPTOIR.Services
             var ticket = new Ticket(model);
 
             ticket.TicketRecipes = model.Recipes.Where(x => x.Count > 0).Select(x => new TicketRecipe(x)).ToList();
+            
+            if (ticket.TicketRecipes.Count == 0)
+            {
+                return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes " };
+            }
+
             ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.TicketNumber = GenerateTicketNumber();
@@ -131,6 +137,12 @@ namespace COMPTOIR.Services
             ticket.Taxes.Clear();
             _db.Transactions?.RemoveRange(ticket.Transactions);
             ticket.TicketRecipes = model.Recipes?.Where(x => x.Count > 0).Select(x => new TicketRecipe(x)).ToList();
+
+            if (ticket.TicketRecipes.Count == 0)
+            {
+                return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes " };
+            }
+
             ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
             ticket.Discount = model.Discount;
             ticket.ChannelId = model.ChannelId;
@@ -555,6 +567,10 @@ namespace COMPTOIR.Services
                 newticket = new Ticket(ticket);
 
                 newticket.TicketRecipes = ticket.Recipes.Where(x => x.Count > 0).Select(x => new TicketRecipe(x)).ToList();
+                if (newticket.TicketRecipes.Count == 0)
+                {
+                    return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes " };
+                }
                 newticket.Taxes = ticket.Taxes?.Select(x => new TicketTax(x)).ToList();
                 newticket.TotalAmount = CalculateTicketAmount(newticket);
                 newticket.TicketNumber = GenerateTicketNumber();
@@ -592,12 +608,16 @@ namespace COMPTOIR.Services
                     model.Ticket.CustomerId = int.Parse(_configuration.GetValue<string>("DefaultCustomer"));
                 }
 
-                //_db.TicketRecipes?.RemoveRange(newticket.TicketRecipes);
-                //_db.TicketTaxes?.RemoveRange(newticket.Taxes);
                 newticket.TicketRecipes.Clear();
                 newticket.Taxes.Clear();
                 _db.Transactions?.RemoveRange(newticket.Transactions);
-                newticket.TicketRecipes = model.Ticket.Recipes?.Select(x => new TicketRecipe(x)).ToList();
+
+                newticket.TicketRecipes = model.Ticket.Recipes.Where(x => x.Count > 0).Select(x => new TicketRecipe(x)).ToList();
+                if (newticket.TicketRecipes.Count == 0)
+                {
+                    return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes " };
+                }
+
                 newticket.Taxes = model.Ticket.Taxes?.Select(x => new TicketTax(x)).ToList();
                 newticket.Discount = model.Ticket.Discount;
                 newticket.ChannelId = model.Ticket.ChannelId;
@@ -692,6 +712,12 @@ namespace COMPTOIR.Services
             }
             var newticket = new Ticket(ticket);
             newticket.TicketRecipes = ticket.Recipes.Where(x => x.Count < 0).Select(x => new TicketRecipe(x)).ToList();
+
+            if (newticket.TicketRecipes.Count == 0)
+            {
+                return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes " };
+            }
+
 
             var oldticket = _db.Tickets.Include(x => x.TicketRecipes).FirstOrDefault(x => x.Id == newticket.RefTicketId);
             if (oldticket == null)
