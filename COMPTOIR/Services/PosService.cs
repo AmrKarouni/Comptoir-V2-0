@@ -698,6 +698,10 @@ namespace COMPTOIR.Services
             {
                 return new ResultWithMessage { Success = false, Message = @$"Reference Ticket ID # {newticket.RefTicketId} Not Found !!!" };
             }
+            if (oldticket.IsRefunded)
+            {
+                return new ResultWithMessage { Success = false, Message = @$"Ticket No# {oldticket.TicketNumber} Can Not Be Refunded !!!" };
+            }
             
             var q = newticket.TicketRecipes.FirstOrDefault(x => oldticket.TicketRecipes.FirstOrDefault(z => z.RecipeId == x.RecipeId) == null ||
                                             oldticket.TicketRecipes.FirstOrDefault(z => z.RecipeId == x.RecipeId).Count + x.Count < 0 );
