@@ -86,7 +86,7 @@ namespace COMPTOIR.Services
             }
             var ticket = new Ticket(model);
 
-            ticket.TicketRecipes = model.Recipes.Select(x => new TicketRecipe(x)).ToList();
+            ticket.TicketRecipes = model.Recipes.Where(x => x.Count > 0).Select(x => new TicketRecipe(x)).ToList();
             ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
             ticket.TotalAmount = CalculateTicketAmount(ticket);
             ticket.TicketNumber = GenerateTicketNumber();
@@ -130,7 +130,7 @@ namespace COMPTOIR.Services
             ticket.TicketRecipes.Clear();
             ticket.Taxes.Clear();
             _db.Transactions?.RemoveRange(ticket.Transactions);
-            ticket.TicketRecipes = model.Recipes?.Select(x => new TicketRecipe(x)).ToList();
+            ticket.TicketRecipes = model.Recipes?.Where(x => x.Count > 0).Select(x => new TicketRecipe(x)).ToList();
             ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
             ticket.Discount = model.Discount;
             ticket.ChannelId = model.ChannelId;
@@ -554,7 +554,7 @@ namespace COMPTOIR.Services
                 }
                 newticket = new Ticket(ticket);
 
-                newticket.TicketRecipes = ticket.Recipes.Select(x => new TicketRecipe(x)).ToList();
+                newticket.TicketRecipes = ticket.Recipes.Where(x => x.Count > 0).Select(x => new TicketRecipe(x)).ToList();
                 newticket.Taxes = ticket.Taxes?.Select(x => new TicketTax(x)).ToList();
                 newticket.TotalAmount = CalculateTicketAmount(newticket);
                 newticket.TicketNumber = GenerateTicketNumber();
@@ -691,7 +691,7 @@ namespace COMPTOIR.Services
                 ticket.CustomerId = int.Parse(_configuration.GetValue<string>("DefaultCustomer"));
             }
             var newticket = new Ticket(ticket);
-            newticket.TicketRecipes = ticket.Recipes.Select(x => new TicketRecipe(x)).ToList();
+            newticket.TicketRecipes = ticket.Recipes.Where(x => x.Count < 0).Select(x => new TicketRecipe(x)).ToList();
 
             var oldticket = _db.Tickets.Include(x => x.TicketRecipes).FirstOrDefault(x => x.Id == newticket.RefTicketId);
             if (oldticket == null)
