@@ -23,6 +23,7 @@ namespace COMPTOIR.Models.View
             IsCash = model.IsCash;
             IsPrinted = model.IsPrinted;
             RefTicketId = model.RefTicketId;
+            IsRefunded = model.IsRefunded;
         }
         public int Id { get; set; }
         public string TicketNumber { get; set; }
@@ -37,5 +38,6 @@ namespace COMPTOIR.Models.View
         public bool? IsCash { get; set; }
         public bool? IsPrinted { get; set; }
         public int? RefTicketId { get; set; }
+        public bool IsRefunded { get; set; }
     }
 }

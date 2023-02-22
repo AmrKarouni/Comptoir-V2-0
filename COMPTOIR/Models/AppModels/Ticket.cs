@@ -22,6 +22,7 @@ namespace COMPTOIR.Models.AppModels
             Discount = model.Discount;
             Transactions = new List<Transaction>();
             RefTicketId = model.RefTicketId;
+            IsRefunded = model.IsRefunded;
         }
 
         public int Id { get; set; }
@@ -89,6 +90,7 @@ namespace COMPTOIR.Models.AppModels
         public bool IsCash { get; set; } = true;
         public bool IsPrinted { get; set; } = false;
         public int? RefTicketId { get; set; }   
+        public bool IsRefunded { get; set; } = false;
         public virtual ICollection<TicketTax>? Taxes { get; set; }
         public virtual ICollection<TicketRecipe>? TicketRecipes { get; set; }
         public virtual ICollection<Transaction>? Transactions { get; set; }

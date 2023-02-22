@@ -23,6 +23,7 @@ namespace COMPTOIR.Models.Binding
             IsPaid = ticket.IsPaid;
             IsPrinted = ticket.IsPrinted;
             RefTicketId = ticket.RefTicketId;
+            IsRefunded = ticket.IsRefunded; 
             Recipes = ticket.TicketRecipes?.Select(x => new TicketRecipeBindingModel(x)).ToList();
             Taxes = ticket.Taxes?.Select(x => new TicketTaxBindingModel(x)).ToList();
 
@@ -41,6 +42,7 @@ namespace COMPTOIR.Models.Binding
         public bool IsPaid { get; set; }
         public bool? IsPrinted { get; set; }
         public int? RefTicketId { get; set; }
+        public bool IsRefunded { get; set; }
         public List<TicketRecipeBindingModel>? Recipes { get; set; }
         public List<TicketTaxBindingModel>? Taxes { get; set; }
     }

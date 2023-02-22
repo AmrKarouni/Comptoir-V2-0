@@ -699,7 +699,7 @@ namespace COMPTOIR.Services
                 return new ResultWithMessage { Success = false, Message = @$"Reference Ticket ID # {newticket.RefTicketId} Not Found !!!" };
             }
             
-            var q = newticket.TicketRecipes.Any(x =>
+            var q = newticket.TicketRecipes.FirstOrDefault(x => oldticket.TicketRecipes.FirstOrDefault(z => z.RecipeId == x.RecipeId) == null ||
                                             oldticket.TicketRecipes.FirstOrDefault(z => z.RecipeId == x.RecipeId).Count + x.Count < 0 );
             //foreach (var tr in newticket.TicketRecipes.)
             //{
@@ -708,16 +708,17 @@ namespace COMPTOIR.Services
             //        return new ResultWithMessage { Success = false, Message = @$"Invalid Refund Amount {tr.Count} For Recipe {tr.Recipe.Name}" };
             //    }
             //}
-            if (!q)
+            if (q != null)
             {
-                return new ResultWithMessage { Success = false, Message = @$"Invalid Refund Amounts" };
+                return new ResultWithMessage { Success = false, Message = @$"Invalid Refund Count !!!" };
             }
 
             oldticket.IsCanceled = true;
             oldticket.CancelDate = DateTime.UtcNow;
             oldticket.LastUpdateDate = DateTime.UtcNow;
             oldticket.DeliveryDate = null;
-            
+            oldticket.IsRefunded = true;
+
             newticket.Taxes = ticket.Taxes?.Select(x => new TicketTax(x)).ToList();
             newticket.TotalAmount = CalculateTicketAmount(newticket);
             newticket.TicketNumber = GenerateTicketNumber();
