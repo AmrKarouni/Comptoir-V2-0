@@ -59,7 +59,7 @@ namespace COMPTOIR.Services
             var customer = _db.Customers?.FirstOrDefault(x => x.Id == id);
             if (customer == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Customer ID#{id} No Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Customer ID#{id} No Found." };
             }
             return new ResultWithMessage { Success = true, Result = customer };
         }
@@ -71,7 +71,7 @@ namespace COMPTOIR.Services
             {
                 if (available.Name == model.Name)
                 {
-                    return new ResultWithMessage { Success = false, Message = $@"Customer {model.Name} Already Exist !!!" };
+                    return new ResultWithMessage { Success = false, Message = $@"Customer {model.Name} Already Exist." };
                 }
             }
             await _db.Customers.AddAsync(model);

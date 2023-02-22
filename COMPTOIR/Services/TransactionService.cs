@@ -19,7 +19,7 @@ namespace COMPTOIR.Services
             var cat = _db.TransactionCategories?.FirstOrDefault(x => x.Name == model.Name);
             if (cat != null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Transaction Category {model.Name} Already Exist !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Transaction Category {model.Name} Already Exist." };
             }
             await _db.TransactionCategories.AddAsync(model);
             _db.SaveChanges();

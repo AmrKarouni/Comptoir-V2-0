@@ -19,7 +19,7 @@ namespace COMPTOIR.Services
             var cat = _db.ChannelCategories?.FirstOrDefault(x => x.Name == model.Name);
             if (cat != null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Channel Category {model.Name} Already Exist !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Channel Category {model.Name} Already Exist." };
             }
             await _db.ChannelCategories.AddAsync(model);
             _db.SaveChanges();
@@ -37,7 +37,7 @@ namespace COMPTOIR.Services
             var channel = _db.Channels?.FirstOrDefault(x => x.Name == model.Name);
             if (channel != null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Channel {model.Name} Already Exist !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Channel {model.Name} Already Exist." };
             }
             await _db.Channels.AddAsync(model);
             _db.SaveChanges();

@@ -85,7 +85,7 @@ namespace COMPTOIR.Services
             var cat = _db.ProductCategories?.FirstOrDefault(x => x.Id == id);
             if (cat == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product Category ID#{id} No Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product Category ID#{id} No Found." };
             }
             return new ResultWithMessage { Success = true, Result = cat };
         }
@@ -94,7 +94,7 @@ namespace COMPTOIR.Services
             var cat = _db.ProductCategories?.FirstOrDefault(x => x.Name == model.Name);
             if (cat != null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Already Exist !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Already Exist." };
             }
 
             await _db.ProductCategories.AddAsync(model);
@@ -111,7 +111,7 @@ namespace COMPTOIR.Services
             var cat = _db.ProductCategories?.FirstOrDefault(x => x.Id == id);
             if (cat == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product Category {model.Name} Not Found." };
             }
             _db.Entry(cat).State = EntityState.Detached;
             cat = model;
@@ -134,7 +134,7 @@ namespace COMPTOIR.Services
             var subcat = _db.ProductSubCategories?.FirstOrDefault(x => x.Id == id);
             if (subcat == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory ID#{id} No Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory ID#{id} No Found." };
             }
             return new ResultWithMessage { Success = true, Result = subcat };
         }
@@ -143,7 +143,7 @@ namespace COMPTOIR.Services
             var subcat = _db.ProductSubCategories?.FirstOrDefault(x => x.Name == model.Name);
             if (subcat != null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Already Exist !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Already Exist." };
 
 
             }
@@ -163,7 +163,7 @@ namespace COMPTOIR.Services
             var subcat = _db.ProductSubCategories?.FirstOrDefault(x => x.Id == id);
             if (subcat == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product SubCategory {model.Name} Not Found." };
             }
             _db.Entry(subcat).State = EntityState.Detached;
             subcat = model;
@@ -183,7 +183,7 @@ namespace COMPTOIR.Services
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             if (prod == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product  ID#{id} No Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product  ID#{id} No Found." };
             }
             var res = new ProductViewModel(prod, hostpath);
             return new ResultWithMessage { Success = true, Result = res };
@@ -197,11 +197,11 @@ namespace COMPTOIR.Services
             {
                 if (available.Name == model.Name)
                 {
-                    return new ResultWithMessage { Success = false, Message = $@"Product {model.Name} Already Exist !!!" };
+                    return new ResultWithMessage { Success = false, Message = $@"Product {model.Name} Already Exist." };
                 }
                 if (available.Code == model.Code)
                 {
-                    return new ResultWithMessage { Success = false, Message = $@"Product {model.Code} Already Exist !!!" };
+                    return new ResultWithMessage { Success = false, Message = $@"Product {model.Code} Already Exist." };
                 }
             }
             var prod = new Product(model);
@@ -221,12 +221,12 @@ namespace COMPTOIR.Services
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             if (product == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product Not Found." };
             }
             var uploadResult = await _fileService.UploadFile(model, "products");
             if (!uploadResult.Success)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Upload Logo Failed !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Upload Logo Failed." };
             }
             product.ImageUrl = uploadResult.Message;
             _db.Entry(product).State = EntityState.Modified;
@@ -240,17 +240,17 @@ namespace COMPTOIR.Services
             var product = _db.Products.Find(id);
             if (product == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product Not Found." };
             }
             var deletedfile = await _fileService.DeleteFile(product.ImageUrl);
             if (deletedfile == null || deletedfile.Success == false)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Delete Logo Failed !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Delete Logo Failed." };
             }
             product.ImageUrl = null;
             _db.Entry(product).State = EntityState.Modified;
             _db.SaveChanges();
-            return new ResultWithMessage { Success = true, Message = "Logo Deleted !!!" };
+            return new ResultWithMessage { Success = true, Message = "Logo Deleted." };
         }
 
         public async Task<ResultWithMessage> PutProductAsync(int id, ProductBindingModel model)
@@ -262,7 +262,7 @@ namespace COMPTOIR.Services
             var oldproduct = _db.Products?.FirstOrDefault(x => x.Id == id);
             if (oldproduct == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Product {model.Name} Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Product {model.Name} Not Found." };
             }
             _db.Entry(oldproduct).State = EntityState.Detached;
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";

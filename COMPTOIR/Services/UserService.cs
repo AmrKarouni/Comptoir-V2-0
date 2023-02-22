@@ -100,12 +100,12 @@ namespace COMPTOIR.Services
             var username = await _userManager.FindByNameAsync(model.UserName);
             if (username != null)
             {
-                return new ResultWithMessage { Success = false, Message = "Username Already Exist!!" };
+                return new ResultWithMessage { Success = false, Message = "Username Already Exist." };
             }
             var userWithSameEmail = await _userManager.FindByEmailAsync(model.Email);
             if (userWithSameEmail != null)
             {
-                return new ResultWithMessage { Success = false, Message = "Email Already Exist!!" };
+                return new ResultWithMessage { Success = false, Message = "Email Already Exist." };
             }
             var user = new ApplicationUser
             {
@@ -119,7 +119,7 @@ namespace COMPTOIR.Services
             {
 
                 await _userManager.AddToRoleAsync(user, COMPTOIR.Constants.Authorization.user_role.ToString());
-                return new ResultWithMessage { Success = true, Message = $@"User {model.UserName} has been registered!" };
+                return new ResultWithMessage { Success = true, Message = $@"User {model.UserName} has been registered." };
             }
             else
             {
@@ -137,7 +137,7 @@ namespace COMPTOIR.Services
                 return new ResultWithMessage
                 {
                     Success = false,
-                    Message = "User Not Found !!!"
+                    Message = "User Not Found."
                 };
             }
             if (user.EmailConfirmed == true)
@@ -145,7 +145,7 @@ namespace COMPTOIR.Services
                 return new ResultWithMessage
                 {
                     Success = false,
-                    Message = "Already Email Confirmed !!!"
+                    Message = "Already Email Confirmed."
                 };
             }
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -156,7 +156,7 @@ namespace COMPTOIR.Services
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-                return new ResultWithMessage { Success = false, Message = "User Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "User Not Found." };
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (!result.Succeeded)
@@ -182,7 +182,7 @@ namespace COMPTOIR.Services
             {
                 authenticationModel.IsAuthenticated = false;
                 authenticationModel.IsEmailConfirmed = false;
-                authenticationModel.Message = $@"This Account Email Not Confirmed Yet !!!";
+                authenticationModel.Message = $@"This Account Email Not Confirmed Yet.";
                 return authenticationModel;
             }
             if (await _userManager.CheckPasswordAsync(user, model.Password))
@@ -269,7 +269,7 @@ namespace COMPTOIR.Services
             {
                 authenticationModel.IsAuthenticated = false;
                 authenticationModel.IsEmailConfirmed = false;
-                authenticationModel.Message = $"Token did not match any user !!!";
+                authenticationModel.Message = $"Token did not match any user.";
                 return authenticationModel;
             }
 
@@ -279,7 +279,7 @@ namespace COMPTOIR.Services
             {
                 authenticationModel.IsAuthenticated = false;
                 authenticationModel.IsEmailConfirmed = false;
-                authenticationModel.Message = $"Token Not Active !!!";
+                authenticationModel.Message = $"Token Not Active.";
                 return authenticationModel;
             }
 
@@ -325,7 +325,7 @@ namespace COMPTOIR.Services
             RevokeTokenById(userId);
             _db.Update(user);
             _db.SaveChanges();
-            return new ResultWithMessage() { Success = true, Message = $@"Account {user.UserName} Deactivated !!!" };
+            return new ResultWithMessage() { Success = true, Message = $@"Account {user.UserName} Deactivated." };
         }
 
         public async Task<ResultWithMessage> ActivateAccountAsync(string userId)
@@ -343,7 +343,7 @@ namespace COMPTOIR.Services
             user.IsActive = true;
             _db.Update(user);
             _db.SaveChanges();
-            return new ResultWithMessage() { Success = true, Message = $@"Account {user.UserName} Deactivated !!!" };
+            return new ResultWithMessage() { Success = true, Message = $@"Account {user.UserName} Deactivated." };
         }
 
         public async Task<ResultWithMessage> RevokeToken(string token)
@@ -365,13 +365,13 @@ namespace COMPTOIR.Services
             // return false if token is not active
             if (!refreshToken.IsActive)
             {
-                new ResultWithMessage() { Success = false, Message = $@"Refresh Token ins not acive!!" };
+                new ResultWithMessage() { Success = false, Message = $@"Refresh Token ins not acive." };
             }
             // revoke token and save
             refreshToken.Revoked = DateTime.UtcNow;
             _db.Update(user);
             _db.SaveChanges();
-            return new ResultWithMessage() { Success = true, Message = $@"Revoke Token Succeeded!!" };
+            return new ResultWithMessage() { Success = true, Message = $@"Revoke Token Succeeded." };
         }
 
         public async Task<ResultWithMessage> RevokeTokenById(string userId)
@@ -379,7 +379,7 @@ namespace COMPTOIR.Services
             var user = _db.Users.Include(u => u.RefreshTokens).FirstOrDefault(u => u.Id == userId);
             if (user == null)
             {
-                new ResultWithMessage() { Success = false, Message = $@"No accounts registered with {user.UserName} !!!" };
+                new ResultWithMessage() { Success = false, Message = $@"No accounts registered with {user.UserName}." };
             }
             var isSuperuser = await IsSuperuser(user.Id);
             if (isSuperuser)
@@ -395,7 +395,7 @@ namespace COMPTOIR.Services
             }
             _db.Update(user);
             _db.SaveChanges();
-            return new ResultWithMessage() { Success = true, Message = $@"Revoke Token Succeeded !!!" };
+            return new ResultWithMessage() { Success = true, Message = $@"Revoke Token Succeeded." };
         }
 
         public async Task<ResultWithMessage> AddNewRole(string roleName)
@@ -403,15 +403,15 @@ namespace COMPTOIR.Services
             var existRole = await _roleManager.FindByNameAsync(roleName);
             if (existRole != null)
             {
-                return new ResultWithMessage() { Success = false, Message = $@"Role {roleName} Is Not Exist !!!" };
+                return new ResultWithMessage() { Success = false, Message = $@"Role {roleName} Is Not Exist." };
             }
             var role = new IdentityRole(roleName);
             var identityRole = await _roleManager.CreateAsync(role);
             if (identityRole != null)
             {
-                return new ResultWithMessage() { Success = true, Message = $@"Role {roleName} Has Been Created !!!" };
+                return new ResultWithMessage() { Success = true, Message = $@"Role {roleName} Has Been Created." };
             }
-            return new ResultWithMessage() { Success = false, Message = $@"Role {roleName} Is Not Created !!!" };
+            return new ResultWithMessage() { Success = false, Message = $@"Role {roleName} Is Not Created." };
         }
 
 
@@ -673,7 +673,7 @@ namespace COMPTOIR.Services
             var userWithSameEmail = await _userManager.FindByEmailAsync(model.Email);
             if (userWithSameEmail != null)
             {
-                return new ResultWithMessage { Success = false, Message = "Email Already Exist!!" };
+                return new ResultWithMessage { Success = false, Message = "Email Already Exist." };
             }
             
             if (model.Roles.Contains("SuperUser"))
@@ -692,7 +692,7 @@ namespace COMPTOIR.Services
             {
 
                 await _userManager.AddToRolesAsync(user, model.Roles);
-                return new ResultWithMessage { Success = true, Message = $@"User {model.UserName} has been registered!" };
+                return new ResultWithMessage { Success = true, Message = $@"User {model.UserName} has been registered." };
             }
             else
             {

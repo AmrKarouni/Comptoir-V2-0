@@ -21,7 +21,7 @@ namespace COMPTOIR.Services
             var cat = _db.PlaceCategories?.FirstOrDefault(x => x.Name == model.Name);
             if (cat != null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Place Category {model.Name} Already Exist !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Place Category {model.Name} Already Exist." };
             }
             await _db.PlaceCategories.AddAsync(model);
             _db.SaveChanges();
@@ -39,7 +39,7 @@ namespace COMPTOIR.Services
             var cat = _db.PlaceCategories?.FirstOrDefault(x => x.Id == id);
             if (cat == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Place Category ID#{id} No Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Place Category ID#{id} No Found." };
             }
             return new ResultWithMessage { Success = true, Result = cat };
         }
@@ -49,7 +49,7 @@ namespace COMPTOIR.Services
             var place = _db.Places?.FirstOrDefault(x => x.Name == model.Name);
             if (place != null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Place {model.Name} Already Exist !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Place {model.Name} Already Exist." };
             }
             await _db.Places.AddAsync(model);
             _db.SaveChanges();
@@ -75,7 +75,7 @@ namespace COMPTOIR.Services
             var place = _db.Places.FirstOrDefault(x => x.Id == id);
             if (place == null)
             {
-                return new ResultWithMessage { Success = false, Message = $@"Place ID#{id} No Found !!!" };
+                return new ResultWithMessage { Success = false, Message = $@"Place ID#{id} No Found." };
             }
             return new ResultWithMessage { Success = true, Result = place };
         }

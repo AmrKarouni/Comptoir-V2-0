@@ -20,7 +20,7 @@ namespace COMPTOIR.Services
             var fileHostServer = _configuration.GetValue<string>("FileHostServer");
             if (model.File == null)
             {
-                return new ResultWithMessage { Success = false, Message = "No File Found !!" };
+                return new ResultWithMessage { Success = false, Message = "No File Found." };
             }
             var extension = model.File.FileName.Substring(model.File.FileName.LastIndexOf('.')).ToLower();
             if (!AllowedFileExtensions.Contains(extension))
@@ -51,9 +51,9 @@ namespace COMPTOIR.Services
             if (File.Exists(fullfilePath))
             {
                 File.Delete(fullfilePath);
-                return new ResultWithMessage { Success = true, Message = $@"File {fileurl} Deleted !!!" };
+                return new ResultWithMessage { Success = true, Message = $@"File {fileurl} Deleted." };
             }
-            return new ResultWithMessage { Success = false, Message = $@"File {fileurl} Not Found !!!" };
+            return new ResultWithMessage { Success = false, Message = $@"File {fileurl} Not Found." };
         }
     }
 }

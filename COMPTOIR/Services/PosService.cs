@@ -24,7 +24,7 @@ namespace COMPTOIR.Services
             var hostpath = $@"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
             var defaultProduction = int.Parse(_configuration.GetValue<string>("DefaultProduction"));
             var recipes = _db.Recipes?.Include(p => p.Product)
-                                      .Where(r => r.PlaceId == defaultProduction
+                                     .Where(r => r.PlaceId == defaultProduction
                                                && r.IsDeleted == false
                                                && r.IsDeactivated == false
                                                && r.IsHidden == false
@@ -67,8 +67,8 @@ namespace COMPTOIR.Services
                 id = int.Parse(_configuration.GetValue<string>("DefaultChannel"));
             }
             var taxes = _db.Channels?.Include(x => x.Category)?
-                                     .ThenInclude(x => x.Taxes)?
-                                     .FirstOrDefault(x => x.Id == id).Category.Taxes?.Where(x => x.IsDeleted == false).ToList();
+                                    .ThenInclude(x => x.Taxes)?
+                                    .FirstOrDefault(x => x.Id == id).Category.Taxes?.Where(x => x.IsDeleted == false).ToList();
 
 
             return new ResultWithMessage { Success = true, Result = taxes };
@@ -90,7 +90,7 @@ namespace COMPTOIR.Services
             
             if (ticket.TicketRecipes.Count == 0)
             {
-                return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes " };
+                return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes." };
             }
 
             ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
@@ -100,10 +100,10 @@ namespace COMPTOIR.Services
             await _db.Tickets.AddAsync(ticket);
             _db.SaveChanges();
             var q = _db.Tickets.Include(x => x.TicketRecipes)
-                                .ThenInclude(x => x.Recipe)
-                                .ThenInclude(x => x.Product)
-                                .Include(x => x.Customer) 
-                                .FirstOrDefault(x => x.Id == ticket.Id);
+                               .ThenInclude(x => x.Recipe)
+                               .ThenInclude(x => x.Product)
+                               .Include(x => x.Customer) 
+                               .FirstOrDefault(x => x.Id == ticket.Id);
             var resTicket = new TicketBindingModel(q);
             return new ResultWithMessage { Success = true, Result = resTicket };
         }
@@ -112,15 +112,15 @@ namespace COMPTOIR.Services
         {
             if (id != model.Id)
             {
-                return new ResultWithMessage { Success = false, Message = "Bad Request !!" };
+                return new ResultWithMessage { Success = false, Message = "Bad Request." };
             }
             var ticket = _db.Tickets.Include(x => x.TicketRecipes)
-                                    .Include(x => x.Taxes)
-                                    .Include(x => x.Transactions)
-                                    .FirstOrDefault(x => x.Id == model.Id);
+                                   .Include(x => x.Taxes)
+                                   .Include(x => x.Transactions)
+                                   .FirstOrDefault(x => x.Id == model.Id);
             if (ticket == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Ticket Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Ticket Not Found." };
             }
             if (model.ChannelId == null)
             {
@@ -140,7 +140,7 @@ namespace COMPTOIR.Services
 
             if (ticket.TicketRecipes.Count == 0)
             {
-                return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes " };
+                return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes." };
             }
 
             ticket.Taxes = model.Taxes?.Select(x => new TicketTax(x)).ToList();
@@ -161,10 +161,10 @@ namespace COMPTOIR.Services
             _db.Entry(ticket).State = EntityState.Modified;
             _db.SaveChanges();
             var q = _db.Tickets.Include(x => x.TicketRecipes)
-                                .ThenInclude(x => x.Recipe)
-                                .ThenInclude(x => x.Product)
-                                .Include(x => x.Customer)
-                                .FirstOrDefault(x => x.Id == ticket.Id);
+                               .ThenInclude(x => x.Recipe)
+                               .ThenInclude(x => x.Product)
+                               .Include(x => x.Customer)
+                               .FirstOrDefault(x => x.Id == ticket.Id);
             var resTicket = new TicketBindingModel(q);
             return new ResultWithMessage { Success = true, Result = resTicket };
         }
@@ -173,8 +173,8 @@ namespace COMPTOIR.Services
         {
             var amount = 0.0;
             ticket.TicketRecipes.Where(x => x.IsFree == false)
-                                .Select(x => amount = amount + (x.UnitPrice * x.Count))
-                                .ToList();
+                               .Select(x => amount = amount + (x.UnitPrice * x.Count))
+                               .ToList();
             if (ticket.Discount != null)
             {
                 amount = (double)(amount - (amount * ticket.Discount));
@@ -201,16 +201,16 @@ namespace COMPTOIR.Services
         {
             var placeToId = int.Parse(_configuration.GetValue<string>("DefaultClientPlace"));
             var ticket = _db.Tickets.Include(x => x.TicketRecipes)
-                                    .Include(x => x.Transactions)
-                                    .ThenInclude(x => x.TransactionProducts)
-                                    .FirstOrDefault(x => x.Id == model.TicketId
+                                   .Include(x => x.Transactions)
+                                   .ThenInclude(x => x.TransactionProducts)
+                                   .FirstOrDefault(x => x.Id == model.TicketId
                                                     && x.IsConfirmed == true
                                                     && x.IsDone == true
                                                     && x.IsCanceled == false
                                                     && x.IsDelivered == false);
             if (ticket == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Ticket Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Ticket Not Found." };
             }
 
             foreach (var ticketRecipe in ticket.TicketRecipes)
@@ -218,7 +218,7 @@ namespace COMPTOIR.Services
                 var recipe = _db.Recipes.Include(x => x.RecipeProducts).FirstOrDefault(x => x.Id == ticketRecipe.RecipeId);
                 if (recipe == null)
                 {
-                    return new ResultWithMessage { Success = false, Message = "Recipe Not Found !!!" };
+                    return new ResultWithMessage { Success = false, Message = "Recipe Not Found." };
                 }
                 ticketRecipe.Recipe = recipe;
                 ticket.Transactions.Add(new Transaction(recipe, ticketRecipe.Count));
@@ -227,7 +227,7 @@ namespace COMPTOIR.Services
             var channel = _db.Channels.Include(x => x.Category).FirstOrDefault(x => x.Id == ticket.ChannelId);
             if (channel == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Channel Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Channel Not Found." };
             }
             var fromPlaces = ticket.Transactions.Select(x => x.ToPlaceId).Distinct();
             foreach (var placeId in fromPlaces.ToList())
@@ -238,7 +238,7 @@ namespace COMPTOIR.Services
                                                         "Transfer",
                                                         ticket.Transactions.
                                                                             Where(x => x.ToPlaceId == placeId)
-                                                                            .Select(p => new TransactionProduct
+                                                                           .Select(p => new TransactionProduct
                                                                             {
                                                                                 ProductId = p.ProductId,
                                                                                 Amount = p.ProductAmount.Value
@@ -250,13 +250,13 @@ namespace COMPTOIR.Services
             var poschannel = _db.Channels.Include(x => x.Category).FirstOrDefault(x => x.Id == ticket.ChannelId);
             if (poschannel == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Channel Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Channel Not Found." };
             }
             var products = ticket.Transactions.Where(x => x.ToPlaceId == poschannel.Category.PlaceId.Value
                                                     && x.CategoryName == "Transfer")
-                                            .SelectMany(x => x.TransactionProducts)
-                                            .Select(x => new TransactionProduct { ProductId = x.ProductId, Amount = x.Amount })
-                                            .ToList();
+                                           .SelectMany(x => x.TransactionProducts)
+                                           .Select(x => new TransactionProduct { ProductId = x.ProductId, Amount = x.Amount })
+                                           .ToList();
             ticket.Transactions.Add(new Transaction(
                                                     poschannel.Category.PlaceId.Value,
                                                     placeToId,
@@ -273,20 +273,20 @@ namespace COMPTOIR.Services
             _db.Entry(ticket).State = EntityState.Modified;
             _db.SaveChanges();
             var q = _db.Tickets.Include(x => x.TicketRecipes)
-                                .ThenInclude(x => x.Recipe)
-                                .ThenInclude(x => x.Product)
-                                .Include(x => x.Customer)
-                                .FirstOrDefault(x => x.Id == ticket.Id);
+                               .ThenInclude(x => x.Recipe)
+                               .ThenInclude(x => x.Product)
+                               .Include(x => x.Customer)
+                               .FirstOrDefault(x => x.Id == ticket.Id);
             var resTicket = new TicketViewModel(q);
             return new ResultWithMessage { Success = true, Result = resTicket };
         }
         public ResultWithMessage CancelTicket(int id)
         {
             var ticket = _db.Tickets.Include(x => x.Transactions)
-                                    .FirstOrDefault(x => x.Id == id);
+                                   .FirstOrDefault(x => x.Id == id);
             if (ticket == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Ticket Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Ticket Not Found." };
             }
             ticket.IsCanceled = true;
             ticket.IsConfirmed = false;
@@ -309,14 +309,14 @@ namespace COMPTOIR.Services
         public ResultWithMessage GetTicketById(int id)
         {
             var ticket = _db.Tickets.Include(x => x.TicketRecipes)
-                                .ThenInclude(x => x.Recipe)
-                                .ThenInclude(x => x.Product)
-                                .Include(x => x.Customer)
-                                .Include(x => x.Taxes)
-                                .FirstOrDefault(x => x.Id == id);
+                               .ThenInclude(x => x.Recipe)
+                               .ThenInclude(x => x.Product)
+                               .Include(x => x.Customer)
+                               .Include(x => x.Taxes)
+                               .FirstOrDefault(x => x.Id == id);
             if (ticket == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Ticket Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Ticket Not Found." };
             }
 
             var resTicket = new TicketBindingModel(ticket);
@@ -327,18 +327,18 @@ namespace COMPTOIR.Services
             var channel = int.Parse(_configuration.GetValue<string>("DefaultChannel"));
             var date = DateTime.UtcNow.Date;
             var tickets = _db.Tickets
-                               .Include(x => x.Customer)
-                               .Where(x => x.ChannelId == channel 
+                              .Include(x => x.Customer)
+                              .Where(x => x.ChannelId == channel 
                                 && x.CurrentDay == date
                                 && x.IsPaid == false
                                 && x.IsDelivered == false
                                 && x.IsCanceled == false
                                 && x.IsConfirmed == true
                                 && x.IsDone == true)
-                               .OrderBy(x => x.OrderDate);
+                              .OrderBy(x => x.OrderDate);
             if (tickets == null)
             {
-                return new ResultWithMessage { Success = false, Message = "No Ticket Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "No Ticket Found." };
             }
             var q = tickets.Select(x => new TicketViewModel(x)).ToList();
             return new ResultWithMessage { Success = true, Result = q };
@@ -349,18 +349,18 @@ namespace COMPTOIR.Services
         {
             var date = DateTime.UtcNow.Date;
             var tickets = _db.Tickets
-                               .Include(x => x.Customer)
-                               .Where(x => x.ChannelId == channelId
+                              .Include(x => x.Customer)
+                              .Where(x => x.ChannelId == channelId
                                 && x.CurrentDay == date
                                 && x.IsPaid == false
                                 && x.IsDelivered == false
                                 && x.IsCanceled == false
                                 && x.IsConfirmed == true
                                 && x.IsDone == true)
-                               .OrderBy(x => x.OrderDate);
+                              .OrderBy(x => x.OrderDate);
             if (tickets == null)
             {
-                return new ResultWithMessage { Success = false, Message = "No Ticket Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "No Ticket Found." };
             }
             var q = tickets.Select(x => new TicketViewModel(x)).ToList();
             return new ResultWithMessage { Success = true, Result = q };
@@ -371,10 +371,10 @@ namespace COMPTOIR.Services
         {
             var list = new List<TicketViewModel>();
             var tickets = _db.Tickets.Include(x => x.Customer)
-                                     .Include(x => x.TicketRecipes)
-                                     .ThenInclude(y => y.Recipe)
-                                     .Where(x => x.IsCanceled == false)
-                                     .ToList();
+                                    .Include(x => x.TicketRecipes)
+                                    .ThenInclude(y => y.Recipe)
+                                    .Where(x => x.IsCanceled == false)
+                                    .ToList();
             if (model.IsVip != null)
             {
                 tickets = tickets.Where(x => x.IsVip == model.IsVip).ToList();
@@ -409,6 +409,11 @@ namespace COMPTOIR.Services
             if (model.IsCash != null)
             {
                 tickets = tickets.Where(x => x.IsCash == model.IsCash).ToList();
+            }
+
+            if (model.IsRefunded != null)
+            {
+                tickets = tickets.Where(x => x.IsRefunded == model.IsRefunded).ToList();
             }
 
             if (model.HasDiscount != null)
@@ -486,7 +491,7 @@ namespace COMPTOIR.Services
                                               (!string.IsNullOrEmpty(x.Customer.ContactNumber04) && x.Customer.ContactNumber04.ToLower().Contains(model.SearchQuery.ToLower())) ||
                                               (!string.IsNullOrEmpty(x.Customer.ContactNumber05) && x.Customer.ContactNumber05.ToLower().Contains(model.SearchQuery.ToLower())) ||
                                               (!string.IsNullOrEmpty(x.CustomerAddress) && x.CustomerAddress.ToLower().Contains(model.SearchQuery.ToLower()))))
-                                  .ToList();
+                                 .ToList();
             }
 
 
@@ -527,7 +532,7 @@ namespace COMPTOIR.Services
                                               (!string.IsNullOrEmpty(x.ContactNumber03) && x.ContactNumber03.ToLower().Contains(model.SearchQuery.ToLower())) ||
                                               (!string.IsNullOrEmpty(x.ContactNumber04) && x.ContactNumber04.ToLower().Contains(model.SearchQuery.ToLower())) ||
                                               (!string.IsNullOrEmpty(x.ContactNumber05) && x.ContactNumber05.ToLower().Contains(model.SearchQuery.ToLower())))
-                                  .ToList();
+                                 .ToList();
             }
 
 
@@ -569,7 +574,7 @@ namespace COMPTOIR.Services
                 newticket.TicketRecipes = ticket.Recipes.Where(x => x.Count > 0).Select(x => new TicketRecipe(x)).ToList();
                 if (newticket.TicketRecipes.Count == 0)
                 {
-                    return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes " };
+                    return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes." };
                 }
                 newticket.Taxes = ticket.Taxes?.Select(x => new TicketTax(x)).ToList();
                 newticket.TotalAmount = CalculateTicketAmount(newticket);
@@ -587,17 +592,17 @@ namespace COMPTOIR.Services
             else
             {
                 newticket = _db.Tickets.Include(x => x.TicketRecipes)
-                                    .Include(x => x.Taxes)
-                                    .Include(x => x.Transactions)
-                                    .FirstOrDefault(x => x.Id == model.Ticket.Id);
+                                   .Include(x => x.Taxes)
+                                   .Include(x => x.Transactions)
+                                   .FirstOrDefault(x => x.Id == model.Ticket.Id);
                 
                 if (newticket == null)
                 {
-                    return new ResultWithMessage { Success = false, Message = "Ticket Not Found !!!" };
+                    return new ResultWithMessage { Success = false, Message = "Ticket Not Found." };
                 }
                 if (newticket.IsPaid == true || newticket.IsDelivered == true)
                 {
-                    return new ResultWithMessage { Success = false, Message = @$"Ticket {newticket.TicketNumber} Is Already Paid !!!" };
+                    return new ResultWithMessage { Success = false, Message = @$"Ticket {newticket.TicketNumber} Is Already Paid." };
                 }
                 if (model.Ticket.ChannelId == null)
                 {
@@ -615,7 +620,7 @@ namespace COMPTOIR.Services
                 newticket.TicketRecipes = model.Ticket.Recipes.Where(x => x.Count > 0).Select(x => new TicketRecipe(x)).ToList();
                 if (newticket.TicketRecipes.Count == 0)
                 {
-                    return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes " };
+                    return new ResultWithMessage { Success = false, Message = @$"Can Not Add 0 Recipes." };
                 }
 
                 newticket.Taxes = model.Ticket.Taxes?.Select(x => new TicketTax(x)).ToList();
@@ -642,7 +647,7 @@ namespace COMPTOIR.Services
                 var recipe = _db.Recipes.Include(x => x.RecipeProducts).FirstOrDefault(x => x.Id == ticketRecipe.RecipeId);
                 if (recipe == null)
                 {
-                    return new ResultWithMessage { Success = false, Message = "Recipe Not Found !!!" };
+                    return new ResultWithMessage { Success = false, Message = "Recipe Not Found." };
                 }
                 ticketRecipe.Recipe = recipe;
                 newticket.Transactions.Add(new Transaction(recipe, ticketRecipe.Count));
@@ -651,7 +656,7 @@ namespace COMPTOIR.Services
             var channel = _db.Channels.Include(x => x.Category).FirstOrDefault(x => x.Id == newticket.ChannelId);
             if (channel == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Channel Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Channel Not Found." };
             }
             var fromPlaces = newticket.Transactions.Select(x => x.ToPlaceId).Distinct();
             foreach (var placeId in fromPlaces.ToList())
@@ -662,7 +667,7 @@ namespace COMPTOIR.Services
                                                             "Transfer",
                                                             newticket.Transactions.
                                                                                     Where(x => x.ToPlaceId == placeId)
-                                                                                    .Select(p => new TransactionProduct
+                                                                                   .Select(p => new TransactionProduct
                                                                                     {
                                                                                         ProductId = p.ProductId,
                                                                                         Amount = p.ProductAmount.Value
@@ -674,13 +679,13 @@ namespace COMPTOIR.Services
             var poschannel = _db.Channels.Include(x => x.Category).FirstOrDefault(x => x.Id == newticket.ChannelId);
             if (poschannel == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Channel Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Channel Not Found." };
             }
             var products = newticket.Transactions.Where(x => x.ToPlaceId == poschannel.Category.PlaceId.Value
                                                     && x.CategoryName == "Transfer")
-                                                        .SelectMany(x => x.TransactionProducts)
-                                                        .Select(x => new TransactionProduct { ProductId = x.ProductId, Amount = x.Amount })
-                                                        .ToList();
+                                                       .SelectMany(x => x.TransactionProducts)
+                                                       .Select(x => new TransactionProduct { ProductId = x.ProductId, Amount = x.Amount })
+                                                       .ToList();
             newticket.Transactions.Add(new Transaction(
                                                         poschannel.Category.PlaceId.Value,
                                                         placeToId,
@@ -690,10 +695,10 @@ namespace COMPTOIR.Services
                                                         model.PaidAmount));
             _db.SaveChanges();
             var q = _db.Tickets.Include(x => x.TicketRecipes)
-                                .ThenInclude(x => x.Recipe)
-                                .ThenInclude(x => x.Product)
-                                .Include(x => x.Customer)
-                                .FirstOrDefault(x => x.Id == newticket.Id);
+                               .ThenInclude(x => x.Recipe)
+                               .ThenInclude(x => x.Product)
+                               .Include(x => x.Customer)
+                               .FirstOrDefault(x => x.Id == newticket.Id);
             var resTicket = new TicketViewModel(q);
             return new ResultWithMessage { Success = true, Result = resTicket };
 
@@ -722,11 +727,11 @@ namespace COMPTOIR.Services
             var oldticket = _db.Tickets.Include(x => x.TicketRecipes).FirstOrDefault(x => x.Id == newticket.RefTicketId);
             if (oldticket == null)
             {
-                return new ResultWithMessage { Success = false, Message = @$"Reference Ticket ID # {newticket.RefTicketId} Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = @$"Reference Ticket ID # {newticket.RefTicketId} Not Found." };
             }
             if (oldticket.IsRefunded)
             {
-                return new ResultWithMessage { Success = false, Message = @$"Ticket No# {oldticket.TicketNumber} Can Not Be Refunded !!!" };
+                return new ResultWithMessage { Success = false, Message = @$"Ticket No # {oldticket.TicketNumber} Can Not Be Refunded." };
             }
             
             var q = newticket.TicketRecipes.FirstOrDefault(x => oldticket.TicketRecipes.FirstOrDefault(z => z.RecipeId == x.RecipeId) == null ||
@@ -734,7 +739,7 @@ namespace COMPTOIR.Services
 
             if (q != null)
             {
-                return new ResultWithMessage { Success = false, Message = @$"Invalid Refund Count !!!" };
+                return new ResultWithMessage { Success = false, Message = @$"Invalid Refund Count." };
             }
 
             oldticket.LastUpdateDate = DateTime.UtcNow;
@@ -758,7 +763,7 @@ namespace COMPTOIR.Services
                 var recipe = _db.Recipes.Include(x => x.RecipeProducts).FirstOrDefault(x => x.Id == ticketRecipe.RecipeId);
                 if (recipe == null)
                 {
-                    return new ResultWithMessage { Success = false, Message = "Recipe Not Found !!!" };
+                    return new ResultWithMessage { Success = false, Message = "Recipe Not Found." };
                 }
                 ticketRecipe.Recipe = recipe;
                 newticket.Transactions.Add(new Transaction(recipe, ticketRecipe.Count));
@@ -767,7 +772,7 @@ namespace COMPTOIR.Services
             var channel = _db.Channels.Include(x => x.Category).FirstOrDefault(x => x.Id == newticket.ChannelId);
             if (channel == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Channel Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Channel Not Found." };
             }
             var fromPlaces = newticket.Transactions.Select(x => x.ToPlaceId).Distinct();
             foreach (var placeId in fromPlaces.ToList())
@@ -778,7 +783,7 @@ namespace COMPTOIR.Services
                                                             "Transfer",
                                                             newticket.Transactions.
                                                                                     Where(x => x.ToPlaceId == placeId)
-                                                                                    .Select(p => new TransactionProduct
+                                                                                   .Select(p => new TransactionProduct
                                                                                     {
                                                                                         ProductId = p.ProductId,
                                                                                         Amount = p.ProductAmount.Value
@@ -790,13 +795,13 @@ namespace COMPTOIR.Services
             var poschannel = _db.Channels.Include(x => x.Category).FirstOrDefault(x => x.Id == newticket.ChannelId);
             if (poschannel == null)
             {
-                return new ResultWithMessage { Success = false, Message = "Channel Not Found !!!" };
+                return new ResultWithMessage { Success = false, Message = "Channel Not Found." };
             }
             var products = newticket.Transactions.Where(x => x.ToPlaceId == poschannel.Category.PlaceId.Value
                                                     && x.CategoryName == "Transfer")
-                                                        .SelectMany(x => x.TransactionProducts)
-                                                        .Select(x => new TransactionProduct { ProductId = x.ProductId, Amount = x.Amount })
-                                                        .ToList();
+                                                       .SelectMany(x => x.TransactionProducts)
+                                                       .Select(x => new TransactionProduct { ProductId = x.ProductId, Amount = x.Amount })
+                                                       .ToList();
             newticket.Transactions.Add(new Transaction(
                                                         poschannel.Category.PlaceId.Value,
                                                         placeToId,
@@ -808,10 +813,10 @@ namespace COMPTOIR.Services
             await _db.Tickets.AddAsync(newticket);
             _db.SaveChanges();
             var res = _db.Tickets.Include(x => x.TicketRecipes)
-                                .ThenInclude(x => x.Recipe)
-                                .ThenInclude(x => x.Product)
-                                .Include(x => x.Customer)
-                                .FirstOrDefault(x => x.Id == newticket.Id);
+                               .ThenInclude(x => x.Recipe)
+                               .ThenInclude(x => x.Product)
+                               .Include(x => x.Customer)
+                               .FirstOrDefault(x => x.Id == newticket.Id);
             var resTicket = new TicketViewModel(res);
             return new ResultWithMessage { Success = true, Result = resTicket };
         }
