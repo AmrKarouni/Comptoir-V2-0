@@ -416,6 +416,16 @@ namespace COMPTOIR.Services
                 tickets = tickets.Where(x => x.IsRefunded == model.IsRefunded).ToList();
             }
 
+            if (model.IsRefund != null && model.IsRefund == true)
+            {
+                tickets = tickets.Where(x => x.RefTicketId != null).ToList();
+            }
+            
+            if (model.IsRefund != null && model.IsRefund == false)
+            {
+                tickets = tickets.Where(x => x.RefTicketId == null).ToList();
+            }
+
             if (model.HasDiscount != null)
             {
                 tickets = tickets.Where(x => x.Discount > 0).ToList();

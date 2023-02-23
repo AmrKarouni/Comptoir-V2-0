@@ -37,6 +37,7 @@
         public bool? IsVip { get; set; }
         public bool? IsCash { get; set; }
         public bool? IsRefunded { get; set; }
+        public bool? IsRefund { get; set; }
         //
         public bool? HasDiscount { get; set; }
     }
