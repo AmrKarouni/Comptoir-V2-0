@@ -14,6 +14,7 @@ namespace COMPTOIR.Models.View
             TicketNumber = model.TicketNumber;
             CreatedDate = model.Date;
             LastUpdateDate = model.LastUpdateDate;
+            RefundDate = model.RefundDate;
             CustomerName = model.Customer?.Name;
             ItemsCount = model.TicketRecipes?.Sum(x => x.Count);
             TotalAmount = model.TotalAmount;
@@ -23,12 +24,16 @@ namespace COMPTOIR.Models.View
             IsCash = model.IsCash;
             IsPrinted = model.IsPrinted;
             RefTicketId = model.RefTicketId;
+            RefTicketNumber = model.RefTicketNumber;
             IsRefunded = model.IsRefunded;
+            RefundTicketId = model.RefTicketId;
+            RefundTicketNumber = model.RefundTicketNumber;
         }
         public int Id { get; set; }
         public string TicketNumber { get; set; }
         public DateTime? CreatedDate { get; set; } 
         public DateTime? LastUpdateDate { get; set; }
+        public DateTime? RefundDate { get; set; }
         public string? CustomerName { get; set; }
         public double? TotalAmount { get; set; } = 0;
         public double? TotalPaidAmount { get; set; } = 0;
@@ -38,6 +43,9 @@ namespace COMPTOIR.Models.View
         public bool? IsCash { get; set; }
         public bool? IsPrinted { get; set; }
         public int? RefTicketId { get; set; }
-        public bool IsRefunded { get; set; }
+        public string? RefTicketNumber { get; set; }
+        public bool IsRefunded { get; set; } = false;
+        public int? RefundTicketId { get; set; }
+        public string? RefundTicketNumber { get; set; }
     }
 }

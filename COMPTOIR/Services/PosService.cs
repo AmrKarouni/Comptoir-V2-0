@@ -475,6 +475,15 @@ namespace COMPTOIR.Services
                 tickets = tickets?.Where(x => x.OrderDate < model.OrderDateTo.Value.AddDays(1)).ToList();
             }
 
+            if (model.RefundDateFrom.HasValue)
+            {
+                tickets = tickets?.Where(x => x.RefundDate >= model.RefundDateFrom).ToList();
+            }
+            if (model.RefundDateTo.HasValue)
+            {
+                tickets = tickets?.Where(x => x.RefundDate < model.RefundDateTo).ToList();
+            }
+
             if (!string.IsNullOrEmpty(model.SearchQuery))
             {
                 tickets = tickets?.Where(x => x.TicketRecipes.Any(y => y.Recipe.Name.ToLower().Contains(model.SearchQuery.ToLower())) ||
@@ -742,8 +751,7 @@ namespace COMPTOIR.Services
                 return new ResultWithMessage { Success = false, Message = @$"Invalid Refund Count." };
             }
 
-            oldticket.LastUpdateDate = DateTime.UtcNow;
-            oldticket.IsRefunded = true;
+            
 
             newticket.Taxes = ticket.Taxes?.Select(x => new TicketTax(x)).ToList();
             newticket.TotalAmount = CalculateTicketAmount(newticket);
@@ -755,6 +763,8 @@ namespace COMPTOIR.Services
             newticket.TotalPaidAmount = model.PaidAmount;
             newticket.Note = model.Note;
             newticket.IsCash = model.IsCash == null ? model.IsCash == null : true;
+            newticket.RefTicketId = oldticket.Id;
+            newticket.RefTicketNumber = oldticket.TicketNumber;
 
 
             var placeToId = int.Parse(_configuration.GetValue<string>("DefaultClientPlace"));
@@ -809,9 +819,19 @@ namespace COMPTOIR.Services
                                                         products,
                                                         (bool)model.IsCash,
                                                         model.PaidAmount));
-            _db.Entry(oldticket).State = EntityState.Modified;
+
+            
             await _db.Tickets.AddAsync(newticket);
             _db.SaveChanges();
+
+            oldticket.LastUpdateDate = DateTime.UtcNow;
+            oldticket.IsRefunded = true;
+            oldticket.RefundTicketId = newticket.Id;
+            oldticket.RefundTicketNumber = newticket.TicketNumber;
+            oldticket.RefundDate = DateTime.UtcNow;
+            _db.Entry(oldticket).State = EntityState.Modified;
+            _db.SaveChanges();
+
             var res = _db.Tickets.Include(x => x.TicketRecipes)
                                .ThenInclude(x => x.Recipe)
                                .ThenInclude(x => x.Product)

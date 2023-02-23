@@ -4,6 +4,7 @@ using COMPTOIR.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace COMPTOIR.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230223120420_refund02")]
+    partial class refund02
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -700,9 +702,6 @@ namespace COMPTOIR.Migrations
                     b.Property<string>("RefundTicketNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RefundedBy")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ServedBy")
                         .HasColumnType("nvarchar(450)");
 
@@ -732,8 +731,6 @@ namespace COMPTOIR.Migrations
                     b.HasIndex("IssuedBy");
 
                     b.HasIndex("LastUpdateBy");
-
-                    b.HasIndex("RefundedBy");
 
                     b.HasIndex("ServedBy");
 
@@ -1399,10 +1396,6 @@ namespace COMPTOIR.Migrations
                         .WithMany()
                         .HasForeignKey("LastUpdateBy");
 
-                    b.HasOne("COMPTOIR.Models.Identity.ApplicationUser", "RefundedUser")
-                        .WithMany()
-                        .HasForeignKey("RefundedBy");
-
                     b.HasOne("COMPTOIR.Models.Identity.ApplicationUser", "ServedUser")
                         .WithMany()
                         .HasForeignKey("ServedBy");
@@ -1422,8 +1415,6 @@ namespace COMPTOIR.Migrations
                     b.Navigation("IssuedUser");
 
                     b.Navigation("LastUpdateUser");
-
-                    b.Navigation("RefundedUser");
 
                     b.Navigation("ServedUser");
                 });

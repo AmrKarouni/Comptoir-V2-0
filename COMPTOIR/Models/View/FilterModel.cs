@@ -25,6 +25,9 @@
 
         public DateTime? OrderDateFrom { get; set; }
         public DateTime? OrderDateTo { get; set; }
+
+        public DateTime? RefundDateFrom { get; set; }
+        public DateTime? RefundDateTo { get; set; }
         ///
         public bool? IsPaid { get; set; }
         public bool? IsConfirmed { get; set; }

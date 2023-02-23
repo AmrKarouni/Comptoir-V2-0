@@ -22,7 +22,10 @@ namespace COMPTOIR.Models.AppModels
             Discount = model.Discount;
             Transactions = new List<Transaction>();
             RefTicketId = model.RefTicketId;
+            RefTicketNumber = model.RefTicketNumber;
             IsRefunded = model.IsRefunded;
+            RefundTicketId = model.RefundTicketId;
+            RefundTicketNumber = model.RefundTicketNumber;
         }
 
         public int Id { get; set; }
@@ -33,6 +36,7 @@ namespace COMPTOIR.Models.AppModels
         public DateTime? CancelDate { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public DateTime? LastUpdateDate { get; set; }
+        public DateTime? RefundDate { get; set; }
         public DateTime? OrderDate { get; set; } = DateTime.UtcNow;
         public DateTime? CurrentDay { get; set; } = DateTime.UtcNow.Date;
 
@@ -72,6 +76,12 @@ namespace COMPTOIR.Models.AppModels
         public string? LastUpdateBy { get; set; }
         public virtual ApplicationUser? LastUpdateUser { get; set; }
 
+
+        [ForeignKey("RefundedUser")]
+        public string? RefundedBy { get; set; }
+        public virtual ApplicationUser? RefundedUser { get; set; }
+
+
         //[ForeignKey("Captain")]
         public int? CaptainId { get; set; }
         //public Captain? Captain { get; set; }
@@ -89,8 +99,11 @@ namespace COMPTOIR.Models.AppModels
         public double? TotalPaidAmount { get; set; } = 0;
         public bool IsCash { get; set; } = true;
         public bool IsPrinted { get; set; } = false;
-        public int? RefTicketId { get; set; }   
+        public int? RefTicketId { get; set; }
+        public string? RefTicketNumber { get; set; }
         public bool IsRefunded { get; set; } = false;
+        public int? RefundTicketId { get; set; }
+        public string? RefundTicketNumber { get; set; }
         public virtual ICollection<TicketTax>? Taxes { get; set; }
         public virtual ICollection<TicketRecipe>? TicketRecipes { get; set; }
         public virtual ICollection<Transaction>? Transactions { get; set; }

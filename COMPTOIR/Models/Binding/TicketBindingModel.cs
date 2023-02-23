@@ -16,6 +16,7 @@ namespace COMPTOIR.Models.Binding
             CustomerName = ticket.Customer?.Name;
             CreatedDate = ticket.Date;
             LastUpdateDate = ticket.LastUpdateDate;
+            RefundDate = ticket.RefundDate;
             IsVip = ticket.IsVip;
             Note = ticket.Note;
             Discount = ticket.Discount;
@@ -23,7 +24,10 @@ namespace COMPTOIR.Models.Binding
             IsPaid = ticket.IsPaid;
             IsPrinted = ticket.IsPrinted;
             RefTicketId = ticket.RefTicketId;
-            IsRefunded = ticket.IsRefunded; 
+            RefTicketNumber = ticket.RefTicketNumber;
+            IsRefunded = ticket.IsRefunded;
+            RefundTicketId = ticket.RefundTicketId;
+            RefundTicketNumber = ticket.RefundTicketNumber;
             Recipes = ticket.TicketRecipes?.Select(x => new TicketRecipeBindingModel(x)).ToList();
             Taxes = ticket.Taxes?.Select(x => new TicketTaxBindingModel(x)).ToList();
 
@@ -35,6 +39,7 @@ namespace COMPTOIR.Models.Binding
         public string? CustomerName { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastUpdateDate { get; set; }
+        public DateTime? RefundDate { get; set; }
         public bool? IsVip { get; set; } = false;
         public string? Note { get; set; }
         public double? Discount { get; set; }
@@ -42,7 +47,10 @@ namespace COMPTOIR.Models.Binding
         public bool IsPaid { get; set; }
         public bool? IsPrinted { get; set; }
         public int? RefTicketId { get; set; }
-        public bool IsRefunded { get; set; }
+        public string? RefTicketNumber { get; set; }
+        public bool IsRefunded { get; set; } = false;
+        public int? RefundTicketId { get; set; }
+        public string? RefundTicketNumber { get; set; }
         public List<TicketRecipeBindingModel>? Recipes { get; set; }
         public List<TicketTaxBindingModel>? Taxes { get; set; }
     }
