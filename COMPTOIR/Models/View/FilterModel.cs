@@ -5,8 +5,10 @@
         public string? SearchQuery { get; set; }
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
-        public string? Sort { get; set; }
-        public string? Order { get; set; }
+        //public string? Sort { get; set; }
+        //public string? Order { get; set; }
+        public string? Active { get; set; }
+        public string? Direction { get; set; }
         ///
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }

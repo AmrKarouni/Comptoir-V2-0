@@ -53,8 +53,8 @@ namespace COMPTOIR.Services
                 }
             }
             var dataSize = products.Count();
-            var sortProperty = typeof(ProductViewModel).GetProperty(model?.Sort ?? "Id");
-            if (model?.Order == "asc")
+            var sortProperty = typeof(ProductViewModel).GetProperty(model?.Active ?? "Id");
+            if (model?.Direction == "asc")
             {
                 list = products?.Select(p => new ProductViewModel(p, hostpath)).OrderBy(x => sortProperty.GetValue(x)).ToList();
             }

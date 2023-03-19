@@ -36,8 +36,8 @@ namespace COMPTOIR.Services
 
 
             var dataSize = customers.Count();
-            var sortProperty = typeof(Customer).GetProperty(model?.Sort ?? "Id");
-            if (model?.Order == "desc")
+            var sortProperty = typeof(Customer).GetProperty(model?.Active ?? "Id");
+            if (model?.Direction == "desc")
             {
                 list = customers?.OrderByDescending(x => sortProperty.GetValue(x)).ToList();
             }

@@ -515,8 +515,8 @@ namespace COMPTOIR.Services
 
 
             var dataSize = tickets.Count();
-            var sortProperty = typeof(TicketViewModel).GetProperty(model?.Sort ?? "Id");
-            if (model?.Order == "desc")
+            var sortProperty = typeof(TicketViewModel).GetProperty(model?.Active ?? "Id");
+            if (model?.Direction == "desc")
             {
                 list = tickets?.Select(o => new TicketViewModel(o)).OrderByDescending(x => sortProperty.GetValue(x)).ToList();
             }
@@ -556,8 +556,8 @@ namespace COMPTOIR.Services
 
 
             var dataSize = customers.Count();
-            var sortProperty = typeof(Customer).GetProperty(model?.Sort ?? "Id");
-            if (model?.Order == "desc")
+            var sortProperty = typeof(Customer).GetProperty(model?.Active ?? "Id");
+            if (model?.Direction == "desc")
             {
                 list = customers?.OrderByDescending(x => sortProperty.GetValue(x)).ToList();
             }
