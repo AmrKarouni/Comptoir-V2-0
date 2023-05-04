@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace COMPTOIR.Models.AppModels
 {
@@ -9,11 +10,7 @@ namespace COMPTOIR.Models.AppModels
         [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]
         [Display(Name = "Tax Name")]
         public string? Name { get; set; }
-        [Required]
-        public string? Type { get; set; }
         public double Rate { get; set; }
-        public virtual ICollection<ChannelCategory>? ChannelCategories { get; set; }
-        public virtual ICollection<TicketTax>? Tickets { get; set; }
-        public bool IsDeleted { get; set; } = false;
+        public virtual ICollection<PaymentChannel>? PaymentChannels { get; set; }
     }
 }

@@ -15,7 +15,7 @@ using System.Text;
 var MochaConnectionString = "MochaConnection";
 var localConnectionString = "LocalConnection";
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString(MochaConnectionString);
+var connectionString = builder.Configuration.GetConnectionString(localConnectionString);
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
 
@@ -28,14 +28,8 @@ builder.Services.Configure<IdentityOptions>(
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IRecipeService, RecipeService>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<IPosService, PosService>();
-builder.Services.AddScoped<ITransactionService, TransactionService>();
-builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddTransient<ApplicationDbContextSeed>();
 builder.Services.AddDbContext<ApplicationDbContext>(x =>
 {
@@ -103,16 +97,10 @@ async Task SeedData(IHost app)
         var service = scope?.ServiceProvider.GetService<ApplicationDbContextSeed>();
         var userManager = scope?.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scope?.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var placeService = scope?.ServiceProvider.GetRequiredService<IPlaceService>();
-        var transactionService = scope?.ServiceProvider.GetRequiredService<ITransactionService>();
-        var channelService = scope?.ServiceProvider.GetRequiredService<IChannelService>();
-        var customerService = scope?.ServiceProvider.GetRequiredService<ICustomerService>();
+        //var placeService = scope?.ServiceProvider.GetRequiredService<IPlaceService>();
         await service.SeedEssentialsAsync(userManager,
-                                          roleManager,
-                                          placeService,
-                                          transactionService,
-                                          channelService,
-                                          customerService);
+                                          roleManager
+                                          );
     }
 }
 // Configure the HTTP request pipeline.
