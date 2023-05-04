@@ -10,7 +10,7 @@ namespace COMPTOIR.Models.AppModels
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be between {2} and {1} characters long", MinimumLength = 3)]
         [Display(Name = "Tax Name")]
-        public string? Name { get; set; }
+        public string? TaxName { get; set; }
         [Required]
         public double Rate { get; set; }
         [ForeignKey("Order")]

@@ -76,12 +76,13 @@ namespace COMPTOIR.Models.AppModels
         public string? OrderNumber { get; set; }
         public string? Note { get; set; }
         public double? DiscountValue { get; set; }
+        public string? PromotionName { get; set; }
         public double? PromotionValue { get; set; }
         public bool IsPaid { get; set; } = false;
         public double? TotalAmount { get; set; } = 0;
         public double? TotalPaidAmount { get; set; } = 0;
         public bool IsPrinted { get; set; } = false;
         public virtual ICollection<OrderTax>? Taxes { get; set; }
-        public virtual ICollection<OrderProduct>? OrderProducts { get; set; }
+        public virtual ICollection<OrderProduct>? Products { get; set; }
     }
 }

@@ -11,12 +11,12 @@ namespace COMPTOIR.Models.AppModels
         [ForeignKey("Product")]
         public int? ProductId { get; set; }
         public virtual Product? Product { get; set; }
+        public string? ProductName { get; set; }
         public double Count { get; set; }
         public bool? IsConfirmed { get; set; }
         public bool? IsDone { get; set; }
         public bool? IsServed { get; set; }
         public string? Note { get; set; }
-        public bool? IsFree { get; set; } = false;
-        public double UnitPrice { get; set; } = 0;
+        public double CurrentUnitPrice { get; set; } = 0;
     }
 }
