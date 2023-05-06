@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/COMPTOIR/appsettings.json
+/COMPTOIR/appsettings.json
+/.gitignore

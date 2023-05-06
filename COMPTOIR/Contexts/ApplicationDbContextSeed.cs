@@ -13,13 +13,7 @@ namespace COMPTOIR.Contexts
             //Seed Roles
 
             await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.SuperUser.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.Developer.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.InventoryAdmin.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.InventoryUser.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.POSAdmin.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.POSUser.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.ProductionAdmin.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.ProductionUser.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.Admin.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.User.ToString()));
             
             //Seed Default User

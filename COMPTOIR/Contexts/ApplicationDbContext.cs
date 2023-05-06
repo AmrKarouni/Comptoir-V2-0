@@ -86,12 +86,6 @@ namespace COMPTOIR.Contexts
                 .IsUnique();
             });
 
-            modelBuilder.Entity<OrderTax>(entity =>
-            {
-                entity.HasIndex(e => new { e.Name })
-                .IsUnique();
-            });
-
             modelBuilder.Entity<Discount>(entity =>
             {
                 entity.HasIndex(e => new { e.Name })
