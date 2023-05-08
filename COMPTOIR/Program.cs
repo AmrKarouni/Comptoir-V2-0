@@ -30,6 +30,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IDiscountService, DiscountService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IPaymentChannelService, PaymentChannelService>();
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IUnitService, UnitService>();
+builder.Services.AddScoped<ITaxService, TaxService>();
+builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddTransient<ApplicationDbContextSeed>();
 builder.Services.AddDbContext<ApplicationDbContext>(x =>
 {
@@ -97,9 +104,22 @@ async Task SeedData(IHost app)
         var service = scope?.ServiceProvider.GetService<ApplicationDbContextSeed>();
         var userManager = scope?.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scope?.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        //var placeService = scope?.ServiceProvider.GetRequiredService<IPlaceService>();
+        var discountService = scope?.ServiceProvider.GetRequiredService<IDiscountService>();
+        var customerService = scope?.ServiceProvider.GetRequiredService<ICustomerService>();
+        var paymentChannelService = scope?.ServiceProvider.GetRequiredService<IPaymentChannelService>();
+        var paymentMethodService = scope?.ServiceProvider.GetRequiredService<IPaymentMethodService>();
+        var unitService = scope?.ServiceProvider.GetRequiredService<IUnitService>();
+        var taxService = scope?.ServiceProvider.GetRequiredService<ITaxService>();
+        var placeService = scope?.ServiceProvider.GetRequiredService<IPlaceService>();
         await service.SeedEssentialsAsync(userManager,
-                                          roleManager
+                                          roleManager,
+                                          discountService,
+                                          customerService,
+                                          paymentChannelService,
+                                          paymentMethodService,
+                                          unitService,
+                                          taxService,
+                                          placeService
                                           );
     }
 }
