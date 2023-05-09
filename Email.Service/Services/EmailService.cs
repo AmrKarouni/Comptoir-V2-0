@@ -52,6 +52,7 @@ namespace Email.Service.Services
             using var client = new SmtpClient() ;
             try
             {
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
                 client.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.Port, true);
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
                 client.Authenticate(_emailConfiguration.Username, _emailConfiguration.Password);
